@@ -1,6 +1,10 @@
 .DS_Store
 *.swp
 
+# Python bytecode (interpreter-version specific; regenerated on every run)
+__pycache__/
+*.pyc
+
 # review-loop artifacts (regenerated on every render; not tracked)
 *.review-state.json
 *-review-v*.html
