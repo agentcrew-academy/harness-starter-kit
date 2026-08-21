@@ -1,9 +1,10 @@
 > English | [中文版](README.zh-TW.md)
 
-# Three small tools that keep AI honest, nine ready-made skills, and a starter rules file
+# Three small tools that keep AI honest, ten ready-made skills, and a starter rules file
 
 > **Updated 2026-08-09**: Both interceptor hooks now ship in a Claude Code version and a Codex version, with the same underlying logic. Added the review-loop skill, bringing the total to six.
 > **Updated 2026-08-12**: Added info-diet (works out where your attention is actually going), bringing the total to seven.
+> **Updated 2026-08-21**: Added phantom-pushback (catches the AI inventing an opinion you never held, then correcting you for it), bringing the total to ten.
 > **Updated 2026-08-14**: Added claude-md-template — a starter CLAUDE.md written to match the official guidance for the fifth-generation models, plus three optional rules files.
 
 Has this ever happened to you: you tell an AI "always run the tests before you say you're done," it does exactly that for the first three times, then forgets on the fourth — and doesn't tell you it forgot.
@@ -89,7 +90,7 @@ There's a piece of logic in the code you should never delete. Without it, if the
 
 ---
 
-## Nine skills
+## Ten skills
 
 **explain**: call `/explain` and it retells whatever was just said in terms a high schooler could follow. No jargon, no slipping into another language mid-explanation. Use it when you can't follow what the AI is saying.
 
@@ -120,6 +121,12 @@ review-loop is a bit different from the others: it only works once you've reform
 **asd-ste100**: a Simplified Technical English rewrite. Use it for English text that's going to be read directly by a machine, or by another AI, where a misread has a real cost — tool descriptions, error messages, instructions passed between agents. The core move is stripping out ambiguous words and multi-clause sentences.
 
 **iso-24495**: an ISO 24495-1 plain-language rewrite, with dedicated techniques for both English and Traditional Chinese. Use it for reports, letters, documentation — text where the goal is for the intended reader to understand it in one pass and know what to do next.
+
+**phantom-pushback**: you ask the AI to change the payment terms to two installments. It makes the change, then adds: "one thing I'd gently push back on — you may be assuming installments are always friendlier to cash flow, but..." You never said that. It needed to end on a note of independent judgment, had nothing to disagree with, so it invented an opinion, put it in your mouth, and corrected you for it.
+
+This is not the same as the AI being long-winded, and telling it to be brief won't fix it — the paragraph looks like real content, which is why it survives editing. The test this skill applies is one question: can you point at something you actually said, or something you actually wrote, where you hold that position? If not, the passage goes. Real objections stay: criticism of your code, your numbers, or your plan is never touched, and a genuine warning buried in a closing caveat gets moved to the top instead of deleted.
+
+Worth knowing why this happens: rules of the form "always give me the strongest counterargument" are a likely cause. They make disagreement compulsory, so when there's nothing to disagree with, the only way to comply is to make something up. The skill says so, and refuses to write the opposite rule either.
 
 ---
 
