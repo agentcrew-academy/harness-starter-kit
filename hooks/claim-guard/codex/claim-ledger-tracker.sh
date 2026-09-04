@@ -19,6 +19,16 @@ case "$tool" in
     mkdir -p "$ledger_dir"
     printf '%s %s\n' "$(date +%H:%M:%S)" "$tool" >> "$search_ledger"
     ;;
+  WebSearch)
+    query_text="$(printf '%s' "$input" | jq -r '.tool_input.query // empty' 2>/dev/null)"
+    mkdir -p "$ledger_dir"
+    printf '%s WebSearch %.120s\n' "$(date +%H:%M:%S)" "$query_text" >> "$search_ledger"
+    ;;
+  web_fetch|WebFetch)
+    url_text="$(printf '%s' "$input" | jq -r '.tool_input.url // empty' 2>/dev/null)"
+    mkdir -p "$ledger_dir"
+    printf '%s WebFetch %.120s\n' "$(date +%H:%M:%S)" "$url_text" >> "$search_ledger"
+    ;;
   Bash)
     command_text="$(printf '%s' "$input" | jq -r '.tool_input.command // empty' 2>/dev/null)"
     if [ -n "$command_text" ]; then

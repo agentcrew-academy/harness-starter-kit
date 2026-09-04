@@ -29,7 +29,7 @@ For each repo:
 
 1. Read status and diff to confirm attributable files; exclude `.env`, `credentials*`, `*.secret`, session dumps, lock files, and any sensitive data not authorized by the manifest.
 2. Run tests proportionate to the risk of the change; at minimum `git diff --check`. If the repo has its own lint/check scripts, run those too — fixes stay scoped to what's relevant to this closure, not a full periodic-maintenance sweep.
-3. Stage file by file — never a blind `git add -A`. Scan the staged diff for secret-like patterns, but don't print the matched values.
+3. Stage file by file — never a blind `git add -A`. For a file listed in this session's write-manifest that was also dirty before this session touched it (or that another session's manifest also lists), don't stage the whole file: run `<checkpoint-skill-dir>/scripts/stage-own-edits.sh <session-id> <file>`. It replays this session's recorded edits on top of `HEAD` and writes the result straight into the index, without touching the working tree, so the other session's uncommitted content stays exactly where it is. Exit code `0` or `1` means it staged cleanly; `2` (this session used a whole-file `Write` on it) or `3` (an edit's `old_string` no longer matches `HEAD` — overlapping change) means hold that file and report it — those two need a human call, not an automatic merge. Scan every staged diff for secret-like patterns, but don't print the matched values.
 4. If the staged diff is empty, report clean — don't create an empty commit.
 5. Conventional Commit subject ≤72 characters; only add `Co-Authored-By` when the system or user explicitly asked for it.
 6. Push the current branch; report failures honestly, no force push.

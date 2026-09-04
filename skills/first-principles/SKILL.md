@@ -1,26 +1,23 @@
 ---
 name: first-principles
-description: "First principles thinking: systematically decompose a problem down to fundamental facts and reason back up from there, avoiding the trap of reasoning by analogy; includes an unknowns-inventory four-quadrant mode (for ambiguous requirements or unfamiliar domains, inventory unknowns first). Triggers: first principles, first principles rethink, reason from the ground up, why should this be done this way, blind spots, unknowns inventory."
-version: 0.3.0
+description: "First-principles decomposition: ask whether the requirement should exist, strip to ground truths, rebuild the minimal solution. Triggers: first principles, first principles rethink, reason from the ground up, why should this be done this way, blind spots, unknowns inventory."
+version: 0.4.0
 ---
 
 # First Principles Thinking
 
-A systematic approach to decomposing complex problems into fundamental truths and reasoning up from there, avoiding the trap of reasoning by analogy.
+Decompose a decision into facts that cannot be reduced further, then reason upward from them, instead of "everyone does it this way" or "we've always done it this way." Customized from awesome-skills/first-principles-skill; Phase 0 (Delete First) was added per Elon Musk's requirement-questioning mantra.
 
-Customized from awesome-skills/first-principles-skill — added Phase 0 (Delete First) per Elon Musk's requirement-questioning mantra.
+> **Explore-unknowns mode**: when the requirement is ambiguous or the domain is unfamiliar and you need to inventory the "known unknowns / unknown unknowns" four quadrants first, read [references/explore-unknowns/guide.md](references/explore-unknowns/guide.md) instead (its own references/ live in the same directory). Come back to this file for the decomposition once the unknowns are mapped.
 
 ## When to Use This Skill
 
-- Evaluating whether an architecture or design is truly optimal
-- Questioning "best practices" that may not fit the current context
-- Breaking through when conventional solutions feel inadequate
-- Making foundational decisions that will have long-term impact
-- Challenging inherited assumptions in legacy systems
-- Designing new systems without cargo-culting existing patterns
-- Questioning whether a requirement or step should exist at all
+- An architecture, practice, or "best practice" looks reasonable but nobody has asked why
+- The current solution keeps feeling wrong and swapping approaches does not help
+- Foundational decisions with long-term impact (pricing structure, service packages, system boundaries)
+- Suspicion that a step or requirement should not exist at all
 
-> **Explore-unknowns mode (merged from the former explore-unknowns skill on 2026-07-19)**: When the requirement is ambiguous or the domain is unfamiliar and you need to inventory the "known unknowns / unknown unknowns" four quadrants first, read [references/explore-unknowns/guide.md](references/explore-unknowns/guide.md) instead (its own references/ live in the same directory). Come back to this file for the decomposition once the unknowns are mapped.
+Not for everyday small decisions or work that already has a clear spec. The decomposition costs time; reserve it for choices that are expensive to get wrong.
 
 ## Core Process
 
@@ -28,85 +25,47 @@ Customized from awesome-skills/first-principles-skill — added Phase 0 (Delete 
 
 **Opening move**: before analyzing *how* to solve something, ask whether this requirement/step/feature should exist at all. If it can be deleted, delete it — don't optimize something that shouldn't exist in the first place. If deleting it actually breaks something, add it back.
 
-Before analyzing *how* to solve a problem, ask whether it should be solved at all.
-
 Elon Musk's mantra: "All requirements are dumb to some degree." The stupidest thing is to optimize something that shouldn't exist.
 
-1. **Try to delete the requirement entirely** - Can the system work without this step/feature/constraint?
-2. **If it can be deleted, delete it** - Don't optimize what should be removed.
-3. **If deletion fails, add it back** - Only then proceed to analysis.
-4. **Challenge who owns the requirement** - Requirements from smart people are the most dangerous, because you're less likely to question them. Always ask: "Can the person who imposed this requirement waive it?"
+1. Try to delete the requirement entirely. Can the system work without this step?
+2. If it can be deleted, delete it. Don't optimize what should be removed.
+3. If deletion fails, add it back, and only then analyze.
+4. Challenge who owns the requirement. Requirements from smart people are the most dangerous because you're least likely to question them. Ask: can the person who imposed it waive it?
 
-**Key Questions:**
-- Does this requirement need to exist?
-- What happens if we simply remove this step?
-- Is this a real constraint or a historical artifact?
-- Would the user actually notice if this was gone?
-
-**Red Flags (requirement may not need to exist):**
-- "We've always had this step"
-- "Legal/compliance requires it" (verify — often outdated)
-- "Users expect it" (have you asked them recently?)
-- "It's in the spec" (who wrote the spec, and why?)
+Red flags: "We've always had this step," "Legal/compliance requires it" (verify, often outdated), "Users expect it" (asked them recently?), "It's in the spec" (who wrote it, and why?).
 
 ### Phase 1: Identify the Problem's Essence
 
-Strip away implementation details to find the core problem:
-
-1. **State the problem clearly** - What exactly needs to be solved?
-2. **Separate symptoms from causes** - Is this the real problem or a manifestation?
-3. **Define success criteria** - What would a perfect solution achieve?
-
-**Key Questions:**
-- What is the fundamental job to be done here?
-- If this system didn't exist, what would users actually need?
-- What outcome matters, independent of how we get there?
+Strip away implementation details. What exactly needs to be solved? Is this the cause or a symptom? What would be different once it is solved? If this system didn't exist, what would the user actually need?
 
 ### Phase 2: Challenge All Assumptions
 
-Identify and question every assumption:
-
-1. **List explicit assumptions** - What are we taking as given?
-2. **Surface implicit assumptions** - What conventions are we following without questioning?
-3. **Test each assumption** - Is this actually a constraint, or just how it's always been done?
-
-**Assumption Categories:**
+List the explicit assumptions, then surface the implicit ones (conventions everyone follows without saying). For each: is this a real constraint, or just how it's always been done?
 
 | Category | Question to Ask |
 |----------|----------------|
 | Technical | "Must we use this technology/pattern?" |
 | Business | "Is this requirement actually fixed?" |
 | Resource | "Are these constraints real or perceived?" |
-| Historical | "Why was this decision made originally?" |
+| Historical | "Why was this decision made originally? Does that condition still hold?" |
 
-**Red Flags (likely false assumptions):**
-- "We've always done it this way"
-- "Industry standard says..."
-- "Everyone uses X for this"
-- "That's too simple to work"
+Red flags: "We've always done it this way," "Industry standard says...," "Everyone uses X," "That's too simple to work."
 
 ### Phase 3: Establish Ground Truths
 
-Identify the irreducible facts:
+Keep only what cannot be decomposed further and whose violation guarantees failure. For client-facing or business decisions, ground truths usually fall into one of four kinds:
 
-1. **Physics/Math constraints** - What cannot be violated?
-2. **Business invariants** - What must remain true for the business?
-3. **User needs** - What does the user fundamentally require?
+- **Contracts and commitments**: what was signed, what was promised to whom
+- **Cash flow**: what was actually received, when, and who deducted what
+- **The other party's own words**: what they said they want or don't want (transcripts, emails), not your paraphrase
+- **Time and people**: real available hours, dates, who can actually be there
 
-**Ground Truth Test:**
-- Can this be further decomposed?
-- Is this provably true, not just commonly believed?
-- Would violating this definitely cause failure?
+Test each: can it be decomposed further? Is it provable, or merely believed? Would violating it definitely cause failure?
 
 ### Phase 4: Reason Upward
 
-Build solutions from ground truths:
+Write the minimal solution first: the simplest thing that satisfies the ground truths and nothing more. Then add layers one at a time; each addition must justify itself.
 
-1. **Start minimal** - What's the simplest thing that satisfies ground truths?
-2. **Add only what's necessary** - Each addition must justify itself
-3. **Challenge each layer** - Does this layer earn its complexity?
-
-**Building Blocks Approach:**
 ```
 Ground Truth → Minimal Solution → Justified Additions → Final Design
      ↑              ↑                    ↑
@@ -115,119 +74,36 @@ Ground Truth → Minimal Solution → Justified Additions → Final Design
 
 ### Phase 5: Validate the Reasoning
 
-Ensure the solution is sound:
-
-1. **Trace back to ground truths** - Can every design decision be traced to a fundamental need?
-2. **Identify weak links** - Where does the reasoning rely on assumptions?
-3. **Stress test** - What would break this solution?
+Can every design decision be traced to a ground truth? Where does the reasoning still rest on an assumption? What would break this solution?
 
 ## Output Format
 
-When applying first principles thinking, structure the analysis as:
+Keep all five sections — that's what makes the output scannable at a glance. Write them in the reader's language and in plain words: no field labels like "Verdict" or "Trade-offs acknowledged," sentences instead of slots. Use a table for assumptions only when there are more than three.
 
 ```markdown
-## First Principles Analysis: [Topic]
+## First-Principles Decomposition: <topic>
 
-### 0. Requirement Check (Delete First)
-**Tried deleting:** [What was attempted]
-**Result:** [Deleted / Cannot delete because: ...]
-**Verdict:** [Proceed / Requirement eliminated]
+### 0. Should this exist at all
+What was tried to delete, what happened, and the verdict — keep or cut. One to three sentences.
 
-### 1. Problem Essence
-**Core problem:** [One sentence]
-**Success criteria:** [Measurable outcomes]
+### 1. The real problem
+One sentence for the core problem, one sentence for what changes once it's solved.
 
-### 2. Assumptions Challenged
-| Assumption | Challenge | Verdict |
-|------------|-----------|---------|
-| [Assumption] | [Why question it] | [Keep/Discard/Modify] |
+### 2. Assumptions challenged
+For each: what it is, why it was doubted, and whether it survived. Use a table only if there are more than three.
 
-### 3. Ground Truths
-- [Irreducible fact 1]
-- [Irreducible fact 2]
-- [Irreducible fact 3]
+### 3. Ground truths
+Three to five, each tagged with its kind (contract / cash flow / the other party's own words / time & people).
 
-### 4. Reasoning Chain
-Ground Truth → [Step 1] → [Step 2] → Solution
+### 4. The solution built from those truths
+What the minimal solution looks like; which layers were added on top, and why each one earned its place.
 
 ### 5. Conclusion
-**Recommended approach:** [Description]
-**Key insight:** [What the first principles analysis revealed]
-**Trade-offs acknowledged:** [What we're accepting]
+The recommendation, the single most important finding from this decomposition, and what tradeoff was accepted to get there. One to two sentences each.
 ```
 
 ## Common Patterns
 
-### Pattern: The Complexity Trap
-
-**Symptom:** Solution is more complex than the problem warrants
-
-**First Principles Check:**
-1. Remove one component - does the system still solve the core problem?
-2. If yes, that component wasn't essential
-3. Repeat until removal breaks core functionality
-
-### Pattern: The Analogy Trap
-
-**Symptom:** "Company X does it this way, so we should too"
-
-**First Principles Check:**
-1. What problem was Company X actually solving?
-2. Is our problem identical in all relevant dimensions?
-3. What constraints did they have that we don't (and vice versa)?
-
-### Pattern: The Legacy Trap
-
-**Symptom:** Maintaining compatibility with decisions that no longer serve us
-
-**First Principles Check:**
-1. What was the original reason for this decision?
-2. Do those conditions still exist?
-3. What's the true cost of change vs. cost of maintaining?
-
-## Integration with Other Thinking Tools
-
-First principles thinking works well with these complementary approaches:
-
-| Tool | When to Combine | How |
-|------|-----------------|-----|
-| **Trade-off Analysis** | After identifying ground truths | Evaluate options against fundamentals |
-| **5-Whys** | When assumptions surface | Dig deeper to find root causes |
-| **Pre-mortem** | Before finalizing solution | Stress-test reasoning chain |
-| **Hypothesis Testing** | When ground truths are uncertain | Validate assumptions empirically |
-
-## Boundaries
-
-**Will:**
-- Challenge assumptions systematically
-- Identify ground truths from first principles
-- Build reasoning chains from fundamentals
-- Reveal when conventional wisdom doesn't apply
-- Question whether requirements should exist at all
-
-**Will Not:**
-- Dismiss all existing solutions as wrong
-- Spend unlimited time on every decision (reserve for important choices)
-- Ignore practical constraints in favor of theoretical purity
-- Guarantee the "best" solution (reveals better reasoning, not perfect answers)
-
-## Quick Reference
-
-**The First Principles Checklist:**
-- [ ] Requirement tested for deletion — can it be removed entirely?
-- [ ] Problem stated in terms of outcomes, not solutions
-- [ ] All assumptions explicitly listed
-- [ ] Each assumption challenged and justified
-- [ ] Ground truths identified and verified
-- [ ] Solution built up from ground truths only
-- [ ] Every design decision traceable to a ground truth
-- [ ] Reasoning chain documented
-
-## Additional Resources
-
-### Reference Files
-- **`references/elon-musk-examples.md`** - Real-world examples from SpaceX and Tesla
-- **`references/software-examples.md`** - Software engineering applications
-
-### Example Files
-- **`examples/architecture-review.md`** - First principles analysis of a microservices decision
+- **The Complexity Trap**: the solution is more complex than the problem. Remove one component; does the core still work? If yes, that component wasn't essential. Repeat until removal breaks it.
+- **The Analogy Trap**: "Company X does it this way." What problem were they actually solving? Are our constraints the same in every relevant dimension?
+- **The Legacy Trap**: maintaining compatibility with decisions that no longer serve us. Why was it decided? Do those conditions still exist? What is the true cost of change versus the cost of keeping it?

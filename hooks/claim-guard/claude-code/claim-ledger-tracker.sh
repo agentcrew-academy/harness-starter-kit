@@ -6,7 +6,7 @@
 #
 # It only logs two kinds of things:
 #   1. Which verification-type commands were run (tests, builds, version checks, etc.)
-#   2. Which searches were performed (finding files, finding keywords)
+#   2. Which searches were performed (finding files, finding keywords, WebSearch, WebFetch)
 #
 # What gets logged is used by the neighboring claim-evidence-guard.sh, which
 # checks this ledger at the end of the turn to see whether "what it just said"
@@ -31,6 +31,16 @@ case "$TOOL" in
     Grep|Glob)
         mkdir -p "$LEDGER_DIR"
         echo "$(date +%H:%M:%S) $TOOL" >> "$SEARCH_LEDGER"
+        ;;
+    WebSearch)
+        QUERY=$(echo "$INPUT" | jq -r '.tool_input.query // empty')
+        mkdir -p "$LEDGER_DIR"
+        echo "$(date +%H:%M:%S) WebSearch ${QUERY:0:120}" >> "$SEARCH_LEDGER"
+        ;;
+    WebFetch)
+        URL=$(echo "$INPUT" | jq -r '.tool_input.url // empty')
+        mkdir -p "$LEDGER_DIR"
+        echo "$(date +%H:%M:%S) WebFetch ${URL:0:120}" >> "$SEARCH_LEDGER"
         ;;
     Bash)
         CMD=$(echo "$INPUT" | jq -r '.tool_input.command // empty')

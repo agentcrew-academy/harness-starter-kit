@@ -17,11 +17,20 @@
 
     "PostToolUse": [
       {
-        "matcher": "Bash|Grep|Glob",
+        "matcher": "Bash|Grep|Glob|WebSearch|WebFetch",
         "hooks": [
           {
             "type": "command",
             "command": "~/.claude/hooks/claim-ledger-tracker.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/write-manifest.sh"
           }
         ]
       }

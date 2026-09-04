@@ -25,7 +25,7 @@ Ask all three at once, not one at a time:
 
 ## Check before you start installing
 
-All three hooks need a small tool called `jq` (used to read data). Check whether it's already there:
+All four hooks need a small tool called `jq` (used to read data). Check whether it's already there:
 
 ```bash
 which jq
@@ -41,7 +41,7 @@ If `brew` itself isn't installed, don't jump straight into telling them to insta
 
 ## Installation steps
 
-### hooks (the three interceptor hooks)
+### hooks (four hooks: three interceptors, one recorder)
 
 1. Copy the script files from `hooks/<tool-name>/**claude-code**/` into `~/.claude/hooks/`, **placed flat at the top level of that folder — don't preserve the subfolder structure from here.** Make sure you take the `claude-code/` copy, not the `codex/` one — the logic is the same but the interface code is different, and using the wrong one just won't run.
 2. Make them executable: `chmod +x ~/.claude/hooks/<filename>`
@@ -54,15 +54,19 @@ If `brew` itself isn't installed, don't jump straight into telling them to insta
 
 The two claim-guard scripts have to be installed **together**. Install only one and the feature silently stops working, with no error message — the user will think they're protected when they're not.
 
-### skills (five ready-made skills)
+`write-manifest` never blocks anything; it only matters once they also install `checkpoint` (lite mode needs it) or run more than one AI session against the same project.
+Neither applies? Skip it, and say so.
+
+### skills (ten ready-made skills)
 
 Copy into `~/.claude/skills/`, keeping each one's own folder. No registration needed — drop them in and they work.
 
 review-loop comes with a script and a template; copy the whole thing, not just SKILL.md. After installing, update the path in SKILL.md's "commands" section to match their actual install location, and run `bash skills/review-loop/examples/regression/run-test.sh` for them to watch (it should show 10 passed, 0 failed), explaining what it's testing as you go. If they don't have a "repeatedly revise a long document" need, this one can be skipped.
 
 checkpoint and neat-freak need to be tuned to match how the user actually organizes their own files. After installing, ask where they usually keep their notes and projects, then help them edit the table in `skills/neat-freak/references/sync-matrix.md`. If they can't answer that right now, skip it for the moment — those two skills won't break without the tuning, they'll just produce inaccurate reconciliation results.
+checkpoint's lite mode also needs the `write-manifest` hook above — flag that if it was skipped.
 
-explain and polite work as-is — no tuning needed.
+explain, polite, first-principles, info-diet, asd-ste100, iso-24495, and phantom-pushback work as-is — no tuning needed.
 
 ### claude-md-template (rules file template)
 

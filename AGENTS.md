@@ -6,7 +6,10 @@ This file only covers where Codex differs from Claude Code.
 
 ## hooks now have a Codex version
 
-They're under `hooks/<tool-name>/codex/`. All three are there, with the exact same logic as the Claude Code version — the interface parts are already adapted, so you can **copy them straight into `~/.codex/hooks/` without porting anything yourself.**
+They're under `hooks/<tool-name>/codex/`. All four are there, with the exact same logic as the Claude Code version.
+The interface parts are already adapted, so you can **copy them straight into `~/.codex/hooks/` without porting anything yourself.**
+One exception: `write-manifest`'s Codex build only tracks which paths were touched, not the before/after content.
+There's no Codex equivalent of `stage-own-edits.sh` yet — see the asymmetry note in `hooks/README.md`.
 
 Install steps:
 
@@ -22,7 +25,8 @@ For the interface differences between the two platforms, and what to change if y
 
 ## skills work as-is
 
-The six folders under `skills/` are all plain-text instructions, not tied to any platform. Just put them somewhere Codex can read them.
+All ten folders under `skills/` are plain-text instructions, not tied to any platform.
+Just put them somewhere Codex can read them.
 
 review-loop is a partial exception: the SKILL.md itself is generic, but it ships with a Python script and an HTML template — copy the whole thing, and update the path in SKILL.md's "commands" section to match the actual install location. The script only uses the standard library, so it doesn't care which assistant is running it.
 

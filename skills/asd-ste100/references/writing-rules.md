@@ -1,6 +1,6 @@
 # ASD-STE100 Writing Rules — Summary and Sources
 
-This file summarizes the public, official description of ASD-STE100 (Simplified Technical English). It paraphrases rule *categories*; it does not reproduce the standard's text or its ~900-word dictionary verbatim. For the authoritative document, request the free download at the official site.
+This file summarizes the public, official description of ASD-STE100 (Simplified Technical English). It paraphrases rule *categories*. It does not reproduce the standard's text or its ~900-word dictionary verbatim. For the authoritative document, request the free download at the official site.
 
 ## What ASD-STE100 Is
 
@@ -23,7 +23,7 @@ ASD-STE100 is a controlled natural language, first released in 1986 (as AECMA Do
 
 **Verb forms**
 - Permitted forms: infinitive, imperative, simple present, simple past, simple future, and past participle used only as an adjective.
-- No present perfect, past perfect, or other compound/auxiliary constructions ("we have received" is not allowed; "we received" is).
+- No present perfect, past perfect, or other compound/auxiliary constructions. "We have received" is not allowed. "We received" is allowed.
 - "-ing" forms are permitted only as a technical noun or as part of a technical noun, not as a verb form.
 
 **Voice**
@@ -32,7 +32,7 @@ ASD-STE100 is a controlled natural language, first released in 1986 (as AECMA Do
 
 **Sentence structure**
 - One instruction per sentence.
-- Maximum ~20 words per sentence for procedures/instructions; maximum ~25 words for descriptive text.
+- Maximum ~20 words per sentence for procedures and instructions. Maximum ~25 words for descriptive text.
 - Do not omit sentence parts (verb, subject, article) just to shorten the sentence — the standard explicitly warns that this creates ambiguity rather than clarity.
 - Noun clusters (strings of nouns stacked as a modifier) are capped at 3 words.
 - Semicolons are not permitted at all (Rule 8.1): "You can use all standard English punctuation marks but not the semicolon (;)." Write separate sentences instead. Every other standard mark, including the em dash, remains permitted.

@@ -40,6 +40,10 @@ The first instruction must tell it to read `references/sync-protocol.md` in full
 
 The main thread spot-reads 1–2 of the files claimed to have been changed, confirms the enumerate final output and the GATE result, patches any failures that can be safely fixed, and finally reports only the sync evidence, the changes made, and anything left unresolved.
 
+### 4. Always follow up with checkpoint
+
+A standalone `neat-freak` run only edits files — it never commits. Run `/checkpoint` right after reconciling (lite mode is fine once the fact list is empty); otherwise these edits sit dirty in the working tree, and the next session has no way to tell them apart from someone else's in-progress work, so they never get closed out. This applies to memory files too — if `memory_mode: update` wrote to them, they need the same closure step as everything else.
+
 ## Boundaries
 
 - Writing the daily log: that's a running record, not reconciliation — leave it to your logging process.

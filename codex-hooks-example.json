@@ -18,11 +18,21 @@
 
     "PostToolUse": [
       {
-        "matcher": "Bash|Grep|Glob|exec|shell",
+        "matcher": "Bash|Grep|Glob|exec|shell|WebSearch|web_fetch|WebFetch",
         "hooks": [
           {
             "type": "command",
             "command": "~/.codex/hooks/claim-ledger-tracker.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "apply_patch|Write|Edit|MultiEdit|Bash|exec|shell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.codex/hooks/write-manifest.sh",
             "timeout": 5
           }
         ]

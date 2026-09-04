@@ -1,6 +1,6 @@
 ---
 name: checkpoint
-description: "Close a session once: daily log, optional fact sync, selective commit/push, and remote verification. Use for /checkpoint, end of session, save, push, commit and push, or checkpoint + neat-freak."
+description: "Close a session once: daily log, optional fact sync, selective commit/push, and remote verification. Use for /checkpoint, end of session, save, push, commit and push, or checkpoint + neat-freak. Lite mode: inline, no subagent, for sessions already kept in sync."
 allowed-tools: Bash(git status *) Bash(git diff *) Bash(git log *) Agent Read
 ---
 
@@ -12,7 +12,28 @@ allowed-tools: Bash(git status *) Bash(git diff *) Bash(git log *) Agent Read
 
 - `scoped` (default): write the daily log once; run a targeted reconciliation only if there's a fact list, then commit + push.
 - `full`: the user explicitly named `neat-freak`, knowledge sync, memory cleanup, or a full closure — run the complete GATE reconciliation before commit + push.
+- `lite`: the user asks for `/checkpoint lite` or lite mode. **The main thread finishes it directly — no subagent, no manifest.** See §0 below.
 - `git-only`: only when the user explicitly says no log / no sync.
+
+## 0. Lite mode
+
+**When to use it**: mid-session, you've already been syncing changes into your notes as you went, the daily log is mostly written, and most changes are already committed and pushed. Running the full flow at that point just repeats work that's already done, plus adds another subagent round-trip.
+
+**Trigger** (any one of these is enough):
+- The user explicitly asks for lite mode.
+- **Automatic downgrade**: the fact list is empty, and 5 or fewer files are attributable to this session. Delegating a closure like that just spends a whole subagent round-trip (measured at roughly 190k tokens in one real case) redoing something the main thread could finish in a handful of commands.
+- All three hold at once: (1) your notes were updated as you went, not batched at the end; (2) the daily log is already written in-conversation and needs at most a line or two more; (3) there's no cross-file fact reconciliation to do.
+
+Fall back to `scoped` if there's a fact list, more than 5 attributable files, or a mixed-author file that needs a judgment call beyond what `stage-own-edits.sh` can make on its own.
+
+**How to do it** (main thread, inline, no subagent at any point):
+1. `git status --porcelain` + `git log -1` across every repo this session touched.
+2. Fill in whatever's still missing from the daily log. Don't rewrite what's already there, and don't backfill entries.
+3. **Stage only the files attributable to this session** — per the `write-manifest` hook's record (see `hooks/write-manifest/`) — listed one by one, never `git add -A`. For a file that was already modified before this session touched it, or that another session's manifest also lists, don't `git add` the whole file: run `scripts/stage-own-edits.sh <session-id> <file>` instead, so only this session's edits get staged (an exit code of `2` or `3` means hold it and report, don't force it through).
+4. Commit + push, and verify `HEAD == origin/<branch>` per repo.
+5. Report using the condensed format below, with `sync:` set to `lite (inline)`.
+
+**What lite skips**: the closure manifest, coverage classification, fact-list reconciliation, memory writes, and subagent delegation/verification. Needing any one of those means it isn't lite — fall back to `scoped`.
 
 ## 1. The main thread builds the closure manifest exactly once
 

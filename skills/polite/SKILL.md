@@ -1,6 +1,6 @@
 ---
 name: polite
-description: "Two-mode tone rewriting: A Warm & Empathetic (customer service replies, delivering bad news, apologies, reassurance, declining a request; too cold, too blunt, soften it up); B Formal Business (outward-facing emails, proposals, announcements, follow-up/reminder emails; too casual, too abrasive, more formal, business tone, more official)."
+description: "Three-mode tone rewriting: A Warm & Empathetic (customer service replies, delivering bad news, apologies, reassurance, declining a request; too cold, too blunt, soften it up); B Formal Business (outward-facing emails to an unspecified audience, announcements; too casual, too abrasive, more formal, business tone, more official); C Formal Business + Warmth (the default once there's a specific named recipient — proposals, reschedules, follow-ups, quotes, marketing, declines; reads too haughty, too much like a form letter for someone I actually know)."
 allowed-tools:
   - Read
   - Edit
@@ -8,7 +8,7 @@ metadata:
   source: Adapted and translated from hardikpthv/agent-skills (MIT)'s empathetic-tone-basic and professional-tone-basic, merged into a single skill. See NOTICE at the repo root.
 ---
 
-# Polite: Tone Rewriting (Warm & Empathetic / Formal Business)
+# Polite: Tone Rewriting (Warm & Empathetic / Formal Business / Formal Business + Warmth)
 
 Determine the mode before rewriting. Shared rule for both modes: **never invent circumstances or excuses for the other person** (e.g., assuming they "must have been busy lately" as the reason they didn't reply) — don't bring up situations they never actually mentioned; deal only with the facts or the request itself. Otherwise it tends to read as guilt-tripping (confirmed case, 2026-07-04: a follow-up email's line "I know things have probably been busy on your end" was flagged as landing that way).
 
@@ -17,7 +17,8 @@ Determine the mode before rewriting. Shared rule for both modes: **never invent 
 | Signal | Mode |
 |---|---|
 | "too cold," "too blunt," "soften it up," "more empathy," "make it more reassuring," "this reads as harsh"; customer service replies, bad news, apologies, declining a request, reassurance | **A Warm & Empathetic** |
-| "too casual," "this comes off too harsh," "more formal," "business tone," "more official"; outward-facing emails, proposals, follow-up/reminder emails, announcements | **B Formal Business** |
+| "too casual," "this comes off too harsh," "more formal," "business tone," "more official"; an announcement or outward-facing email with no specific recipient in mind | **B Formal Business** |
+| Same signals as B, **but there's a specific named recipient** — a proposal, reschedule, quote, follow-up, marketing email, or decline addressed to someone you actually know; "this reads too haughty," "too much like a form letter" | **C Formal Business + Warmth (default for a named recipient)** |
 
 **Neither mode applies to**: spinning the truth so the other person draws the wrong conclusion, manipulative reassurance, legal documents, safety warnings, factual incident reports, or casual chatter in an internal group chat.
 
@@ -71,3 +72,58 @@ Before / After:
 **After**: Happy to teach this. One thing that would speed things up considerably — if you could set me up with an account beforehand, I can test it hands-on directly, which will also make the content more relevant to what your team will actually be using.
 
 Don't overdo it: formal doesn't mean bureaucratic. Avoid stacking jargon ("cross-functional synergy alignment deliverables"), unnecessary length, or passive voice so pervasive the sentence loses its subject. The goal is clean and sharp, not corporate-speak.
+
+## Mode C: Formal Business + Warmth (default once there's a specific recipient)
+
+B's skeleton, plus two of A's touches. **B is written for an unspecified audience — used on someone you actually know, it reads as a public announcement**: precise, clean, every sentence moving things forward, but not one line addressed to *them* as a person.
+
+All four of these need to be present. Miss one and it's just B again:
+
+1. **Open by acknowledging what they already did** (borrowed from Mode A's "acknowledge first, then address"). They sent something, put materials together, gave you advance notice, followed through on a commitment — say so in the first sentence. It isn't flattery, it's showing you noticed. A follow-up/reminder email needs this too — acknowledge their last reply or commitment before asking for a status update.
+   - "Thanks for laying out exactly where things stand — that makes it much easier for me to plan around."
+2. **When they apologize or seem uneasy, actively take the blame off them.** If they say "sorry for the short notice," say plainly there's no need to apologize, and give a real reason.
+   - "No need to apologize about the reschedule — knowing early actually makes it easier to plan around."
+   - The shared rule at the top of this file still applies here: taking the blame off them is fine, but **don't invent circumstances for them** ("you've probably been busy lately" is off-limits). Only respond to what they actually said.
+3. **Soften every request** (borrowed from Mode A's rule 4): "You need to..." becomes "If it works for you, could you...". B's precision stays in the *content*, not the tone. Cap it at two "if you could"s per email — more than that starts to feel sticky.
+4. **Close by leaving a way out, and hand control back to them.** After stating the next step, add one line that says it's fine if this doesn't work, then sign off.
+   - "If this time doesn't work for you, just let me know and we'll find another slot."
+
+**Warmth can't change the facts.** Don't redefine how important something is just to soften the landing (a required deliverable doesn't become "just a nice-to-have"), don't soften a deadline or an amount, and don't turn "must" into "you could consider." Soften the sentence, not the content.
+
+**Plain-text email formatting**: skip `**bold**` and markdown — the asterisks show up literally once sent. Use paragraph breaks and sentence order for emphasis instead. Don't mix full-width and half-width punctuation in the same message.
+
+### Condescension check (run this before sending — the single most common mistake here)
+
+**Two passes, each a full read-through on its own — don't merge them into one pass.** The sentences Pass 2 catches read as clean under Pass 1's test; running only Pass 1 will miss them every time. **Only report the condescension check as done once both passes are actually finished in full** — stopping halfway and calling it done is a false claim, not a shortcut.
+
+#### Pass 1: Bestowing
+
+Test: **does this sentence write the decision as something I'm granting?**
+
+| Condescending | Rewrite |
+|---|---|
+| Feel free to reply whenever, no rush | This email is open whenever you get to it |
+| I can give you a discount | There's a discount available here |
+| I'll send you the discount code | Reply to this email and the discount code is yours |
+| I'll hold your spot until Friday | You're covered through Friday |
+| Let me know if you have questions | Ask anytime if anything's unclear |
+
+Common symptom: **the subject is "I," and the verb is a bestowing one** (let, help, give, allow, hold, notify). Swap the subject to the other person or the thing itself, and the tone flattens out.
+
+#### Pass 2: Presumptuous consideration
+
+Test: **does this sentence describe their mood, willingness, or time pressure for them?**
+
+If so, cut it or rewrite it — no matter how considerate it sounds. This pass is the harder one, because **the sentences it catches pass Pass 1 cleanly**: the subject is the other person, there's no bestowing verb, the tone is gentle — exactly what the rest of the email is supposed to sound like. The problem is the assumption underneath it, which amounts to saying "I've been waiting on you." Three shapes it takes:
+
+| What it presumes about them | Example |
+|---|---|
+| Willingness | If you don't feel like discussing this right now |
+| Burden | No need for a long reply, a line or two is enough |
+| Guilt | No need to explain if you haven't started yet |
+
+Fix: **tie the way-out to an objective fact, not their internal state** — "if this time doesn't work" is fine, "if you can't be bothered dealing with it" isn't. When in doubt, cut the sentence entirely — the email won't read as cold for losing it.
+
+### Don't overdo it
+
+Acknowledgment isn't flattery. **Thank them once per thing**, not once per paragraph; don't stack up phrases like "thank you so much for your time amid your busy schedule"; and don't let warmth bury the actual point — state the time, amount, deadline, and the ask as plainly as Mode B would.

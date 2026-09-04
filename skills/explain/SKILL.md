@@ -14,6 +14,36 @@ When someone types `/explain` (with or without a topic), **re-explain** the subj
 - **File path given** (`/explain <file path>`): read that file first, then re-explain it following the rules below.
 - If it's unclear which part is meant, pick the part the user is most likely stuck on, and open with "I'm guessing you mean X — let me know if that's not it."
 
+## Document mode: if you have a way to delegate to another model, prefer that when the target is a file path
+
+Skip this section when the target is **the previous reply** or an **abstract topic** with no matching file — a separate process can't see this conversation.
+
+It only applies when the target is a **specific file path**:
+
+1. This assumes you have some CLI tool that can run a headless prompt against another model and read a local file by absolute path (this section was originally written around `agy`, a wrapper for Google's Antigravity CLI — swap in whatever equivalent tool you actually have, or skip this entirely if you don't have one).
+2. If you do, call it with a prompt that pastes in the full "Hard rules" section below verbatim (the other process can't see this file, so it needs the whole ruleset spelled out), plus the absolute path to read. For example:
+   ```
+   Re-explain this document in plain [language] a high-schooler could follow. Rules:
+   1. No mixing languages; a genuinely untranslatable term can stay in the
+      original, with a parenthetical plain-language explanation the first
+      time it appears.
+   2. No jargon, no abbreviations.
+   3. Short sentences, one idea each.
+   4. Lean on comparisons and everyday examples.
+   5. Lead with the conclusion / what it means for the reader, details after.
+   6. Say less and say it clearly -- don't cram in every detail.
+   Structure: one-sentence summary -> plain-language breakdown (2-4 points) ->
+   what it means for you -> a closing offer to go deeper if they want it.
+   Read this file: <absolute path>
+   ```
+3. **Fall back to writing it yourself** (never hand over a rule-violating output as-is) whenever any of these hold:
+   - the tool isn't installed / command not found
+   - non-zero exit code, timeout, or empty output
+   - the output still breaks a "Hard rules" item below (mixed languages without a parenthetical, untranslated jargon, and so on)
+4. Whether the draft came from the tool or you wrote it yourself, always run the "Self-check" below before sending it.
+
+This is optional acceleration, not a requirement — everything else in this file works the same with or without a second CLI in the loop.
+
 ## Hard rules (breaking these means the explanation failed)
 
 1. **Reply in the language the user is using, and re-explain it in plain language a high-schooler could follow — no jargon.**

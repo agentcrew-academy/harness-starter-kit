@@ -1,11 +1,12 @@
 > English | [中文版](README.zh-TW.md)
 
-# Three small tools that keep AI honest, ten ready-made skills, and a starter rules file
+# Four small tools that keep AI honest, ten ready-made skills, and a starter rules file
 
 > **Updated 2026-08-09**: Both interceptor hooks now ship in a Claude Code version and a Codex version, with the same underlying logic. Added the review-loop skill, bringing the total to six.
 > **Updated 2026-08-12**: Added info-diet (works out where your attention is actually going), bringing the total to seven.
-> **Updated 2026-08-21**: Added phantom-pushback (catches the AI inventing an opinion you never held, then correcting you for it), bringing the total to ten.
 > **Updated 2026-08-14**: Added claude-md-template — a starter CLAUDE.md written to match the official guidance for the fifth-generation models, plus three optional rules files.
+> **Updated 2026-08-21**: Added phantom-pushback (catches the AI inventing an opinion you never held, then correcting you for it), bringing the total to ten.
+> **Updated 2026-09-04**: Added a fourth hook, write-manifest — not an interceptor, a silent recorder of which files a session actually touched, so a later closure step can tell your edits apart from another session's uncommitted work. `checkpoint`'s lite mode and mixed-author file handling both depend on it.
 
 Has this ever happened to you: you tell an AI "always run the tests before you say you're done," it does exactly that for the first three times, then forgets on the fourth — and doesn't tell you it forgot.
 
@@ -43,9 +44,11 @@ It'll start by asking you three things — roughly: "what do you mainly use your
 
 ---
 
-## Three interceptor hooks
+## Four hooks: three interceptors, one recorder
 
-**Both platforms are covered.** Each tool has a `claude-code/` folder and a `codex/` folder underneath it, and the logic inside is identical — the only difference is the handful of lines tied to each platform's interface. Install whichever one matches the tool you use; if you use both, install both. The ledgers are kept separate, so they won't collide.
+**Both platforms are covered.** Each tool has a `claude-code/` folder and a `codex/` folder underneath it, and the logic inside is identical — the only difference is the handful of lines tied to each platform's interface. Install whichever one matches the tool you use; if you use both, install both. The ledgers and state folders are kept separate per platform, so they won't collide.
+
+The first three below can block a write or hold up the end of a turn. The fourth, write-manifest, never blocks anything — it just keeps a quiet record, and other things (like checkpoint below) read that record later.
 
 For exactly where the two versions differ, and what to change if you want to port another hook yourself, see the comparison table in [`hooks/README.md`](hooks/README.md).
 
@@ -88,17 +91,27 @@ Two settings, and you can drop it into any project.
 
 There's a piece of logic in the code you should never delete. Without it, if the AI hits an error it can't fix, it gets stuck in a loop — try to finish, get blocked, try to finish again, get blocked again — forever. That's the single easiest trap to fall into if you build a tool like this yourself, so I left a comment explaining it.
 
+### write-manifest: keeps a receipt of which files this session actually touched
+
+This one's different from the other three — it never blocks anything. It's a dashcam, not a guard.
+
+Every time the AI writes or edits a file, it quietly appends the path to a per-session list, and (on the Claude Code side) logs the exact before/after text too. Nothing reads that list on its own — it's there for something else to consult later.
+
+Here's the problem it solves: run two sessions against the same project at once, or come back to a session after a break, and "which of these uncommitted changes are mine" stops being obvious. A blind `git add -A` at that point can sweep someone else's in-progress work straight into your commit. With the manifest, a closing step can check exactly which files this session is responsible for, and for a file another session also touched, replay just this session's edits on top of the last commit instead of overwriting the whole thing (see `stage-own-edits.sh`, shipped with the `checkpoint` skill below).
+
+You'll only need this one if you run more than one AI session against the same project, or if you're using the `checkpoint` skill's lite mode. If you never do either, skip it.
+
 ---
 
 ## Ten skills
 
 **explain**: call `/explain` and it retells whatever was just said in terms a high schooler could follow. No jargon, no slipping into another language mid-explanation. Use it when you can't follow what the AI is saying.
 
-**polite**: rewrites the tone of a message for you. Two modes — one warm and empathetic (for customer replies, breaking bad news, turning someone down), and one formal-business (for outbound emails, proposals, chasing payment). There's one rule in here I added on purpose: never invent the other person's circumstances for them. Something like "I know you've probably been really busy lately" — if they never said that, don't put it in their mouth. It reads as manipulative.
+**polite**: rewrites the tone of a message for you. Three modes — one warm and empathetic (for customer replies, breaking bad news, turning someone down), one formal-business (for an announcement with no specific reader in mind), and one that's formal-business plus warmth for when you're actually writing to someone you know (a proposal, a reschedule, a quote, a follow-up) — because the formal mode alone reads like a form letter once there's a name on it. That third mode ends with a two-pass check for the single most common mistake in business writing: phrasing that makes the decision sound like something you're graciously granting, and lines that presume how the other person feels or how busy they are. There's also one rule that runs through all three modes: never invent the other person's circumstances for them. Something like "I know you've probably been really busy lately" — if they never said that, don't put it in their mouth. It reads as manipulative.
 
 **first-principles**: rethink something from the ground up instead of copying how someone else did it. The core question, before you ever ask "how should I do this," is "should this even be done at all." It comes with a process for mapping out your unknowns, which works well when the requirements are still fuzzy or you're new to the whole area.
 
-**checkpoint**: finishes everything that needs doing at the end of a session, in one pass — writing the work log, choosing what to save, uploading it, and then double-checking it actually made it up there. The point is doing it in one pass; doing the same thing twice logs it twice.
+**checkpoint**: finishes everything that needs doing at the end of a session, in one pass — writing the work log, choosing what to save, uploading it, and then double-checking it actually made it up there. The point is doing it in one pass; doing the same thing twice logs it twice. If most of a session was already kept in sync as you went, a lite mode skips the full round-trip and does the last few steps inline instead — it leans on the write-manifest hook above to know which files are actually yours to stage.
 
 **neat-freak**: does the reconciliation. Not formatting — facts. Which project is at what stage, which contract got signed, which payment came in, which to-do actually got finished a while ago. It first runs a script that mechanically counts up the current state — numbers that can't be faked — and only then edits files based on that count. Instead of letting the AI say "all synced up" from memory.
 
