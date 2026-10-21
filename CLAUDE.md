@@ -31,8 +31,6 @@ If the person is clearly an engineer, switch to a normal technical conversation 
 | hook `no-emoji-guard` | Blocks file writes that contain emoji | `python3` |
 | hook `lint-gate` | Runs a check command the user names before the AI may end its turn | `jq`, plus a check command |
 
-Everything under `retired/` is no longer installed. Only install from there if the user asks for a specific item, and read `retired/README.md` with them first.
-
 ## Ask these before you install anything
 
 Ask all at once, not one at a time:

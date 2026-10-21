@@ -4,7 +4,7 @@
 
 A few small hooks that make AI tell the truth about what it did, plus four skills you'll use every day.
 
-> **Updated 2026-10-22**: The kit is now a core set. New: **humanizer** (removes the "AI voice" from a draft) and **block-outgoing-comms** (asks you before anything sends an email, message or post). You can now install with Claude Code's plugin commands, one line each. checkpoint and neat-freak are their own plugin, `agentcrew-closure`, because they assume you keep a daily log and notes in git. review-loop, info-diet, phantom-pushback, asd-ste100, iso-24495 and claude-md-template moved to `retired/`: still there to read, but no longer installed or maintained. Details in [`retired/README.md`](retired/README.md).
+> **Updated 2026-10-22**: The kit is now a core set. New: **humanizer** (removes the "AI voice" from a draft) and **block-outgoing-comms** (asks you before anything sends an email, message or post). You can now install with Claude Code's plugin commands, one line each. checkpoint and neat-freak are their own plugin, `agentcrew-closure`, because they assume you keep a daily log and notes in git. review-loop, info-diet, phantom-pushback, asd-ste100, iso-24495 and claude-md-template were removed. To read them, check out the git tag `retired-archive-2026-10-22`; they get no fixes.
 
 Has this ever happened to you: you tell an AI "always run the tests before you say you're done," it does that the first three times, then forgets on the fourth, and doesn't tell you.
 

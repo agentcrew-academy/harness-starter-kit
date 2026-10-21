@@ -4,7 +4,7 @@
 
 幾個讓 AI 老實交代自己做了什麼的小 hook，加上四個天天用得到的 skill。
 
-> **2026-10-22 更新**：這包東西縮成核心。新增 **humanizer**（把文字裡的 AI 味去掉）和 **block-outgoing-comms**（寄信、發訊息、發文之前先問你）。現在可以用 Claude Code 的 plugin 指令一行安裝。checkpoint 和 neat-freak 拆成獨立的 `agentcrew-closure`，因為它們假設你有每日日誌、筆記放在 git 裡。review-loop、info-diet、phantom-pushback、asd-ste100、iso-24495 與 claude-md-template 移到 `retired/`，仍可參考，但不再安裝、也不再維護。細節見 [`retired/README.md`](retired/README.md)。
+> **2026-10-22 更新**：這包東西縮成核心。新增 **humanizer**（把文字裡的 AI 味去掉）和 **block-outgoing-comms**（寄信、發訊息、發文之前先問你）。現在可以用 Claude Code 的 plugin 指令一行安裝。checkpoint 和 neat-freak 拆成獨立的 `agentcrew-closure`，因為它們假設你有每日日誌、筆記放在 git 裡。review-loop、info-diet、phantom-pushback、asd-ste100、iso-24495 與 claude-md-template 已移除。想看舊版可切到 git 標籤 `retired-archive-2026-10-22`，那裡的東西不再修。
 
 你有沒有遇過這種事：你明明告訴 AI「每次改完程式碼都要先跑測試」，它前三次乖乖照做，第四次就忘了，而且忘記的時候完全不會講。
 
