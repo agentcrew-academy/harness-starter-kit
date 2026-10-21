@@ -5,23 +5,9 @@
     "url": "https://github.com/agentcrew-academy"
   },
   "metadata": {
-    "description": "A small Claude Code starter kit: five everyday skills plus hooks that stop unverified completion claims and ask before anything is sent out."
+    "description": "A small Claude Code starter kit: hooks that stop unverified completion claims and ask before anything is sent out, plus a few everyday skills."
   },
   "plugins": [
-    {
-      "name": "agentcrew",
-      "source": "./",
-      "description": "Six skills: checkpoint (one-step session close) with neat-freak (its fact-reconciliation engine), polite (tone rewriting), humanizer (removes AI-sounding patterns), explain (plain-language re-explain), first-principles (decision decomposition).",
-      "strict": false,
-      "skills": [
-        "./skills/checkpoint",
-        "./skills/neat-freak",
-        "./skills/explain",
-        "./skills/polite",
-        "./skills/first-principles",
-        "./skills/humanizer"
-      ]
-    },
     {
       "name": "claim-guard",
       "source": "./hooks/claim-guard",
@@ -62,6 +48,47 @@
       }
     },
     {
+      "name": "block-outgoing-comms",
+      "source": "./hooks/block-outgoing-comms",
+      "description": "Asks you to confirm before any tool sends an email, chat message or post, so nothing goes out unseen.",
+      "strict": false,
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "^mcp__.*__(.*_)?(send|reply|forward|broadcast|publish|schedule|push)(_.*)?$",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "bash \"${CLAUDE_PLUGIN_ROOT}\"/claude-code/block-outgoing-comms.sh"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "agentcrew",
+      "source": "./",
+      "description": "Four everyday skills: polite (tone rewriting), humanizer (removes AI-sounding patterns), explain (plain-language re-explain), first-principles (decision decomposition).",
+      "strict": false,
+      "skills": [
+        "./skills/polite",
+        "./skills/humanizer",
+        "./skills/explain",
+        "./skills/first-principles"
+      ]
+    },
+    {
+      "name": "agentcrew-closure",
+      "source": "./",
+      "description": "checkpoint (one-step session close) with neat-freak (its fact-reconciliation engine). Assumes you keep a daily log and your notes or projects in git; if you don't, skip this one.",
+      "strict": false,
+      "skills": [
+        "./skills/checkpoint",
+        "./skills/neat-freak"
+      ]
+    },
+    {
       "name": "write-manifest",
       "source": "./hooks/write-manifest",
       "description": "Silently records which files each session edited, so checkpoint stages only this session's changes when several sessions share a repo.",
@@ -93,25 +120,6 @@
               {
                 "type": "command",
                 "command": "python3 \"${CLAUDE_PLUGIN_ROOT}\"/claude-code/no-emoji-guard.py"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "name": "block-outgoing-comms",
-      "source": "./hooks/block-outgoing-comms",
-      "description": "Asks you to confirm before any tool sends an email, chat message or post, so nothing goes out unseen.",
-      "strict": false,
-      "hooks": {
-        "PreToolUse": [
-          {
-            "matcher": "^mcp__.*__(.*_)?(send|reply|forward|broadcast|publish|schedule|push)(_.*)?$",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "bash \"${CLAUDE_PLUGIN_ROOT}\"/claude-code/block-outgoing-comms.sh"
               }
             ]
           }
