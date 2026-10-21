@@ -4,9 +4,11 @@
 # This one works like a dashcam: every time the AI runs a command, it quietly
 # logs an entry beside it — no noise, no interruption.
 #
-# It only logs two kinds of things:
+# It logs three kinds of things:
 #   1. Which verification-type commands were run (tests, builds, version checks, etc.)
 #   2. Which searches were performed (finding files, finding keywords, WebSearch, WebFetch)
+#   3. Which files were edited, so a verification that ran before the last edit
+#      doesn't count as covering the current code
 #
 # What gets logged is used by the neighboring claim-evidence-guard.sh, which
 # checks this ledger at the end of the turn to see whether "what it just said"
@@ -22,12 +24,24 @@ LEDGER_DIR="$HOME/.cache/claude-guard-hooks"
 
 INPUT=$(cat)
 TOOL=$(echo "$INPUT" | jq -r '.tool_name // empty')
-SID=$(echo "$INPUT" | jq -r '.session_id // "default"')
+# A subagent gets its own ledger (agent_id), so its claims are checked against its own work
+SID=$(echo "$INPUT" | jq -r '.agent_id // .session_id // "default"')
 
 VERIFY_LEDGER="$LEDGER_DIR/${SID}.verify"
 SEARCH_LEDGER="$LEDGER_DIR/${SID}.search"
+EDIT_LEDGER="$LEDGER_DIR/${SID}.edit"
 
 case "$TOOL" in
+    Write|Edit|MultiEdit|NotebookEdit)
+        FP=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.notebook_path // empty')
+        mkdir -p "$LEDGER_DIR"
+        echo "$(date +%H:%M:%S) $TOOL ${FP:0:160}" >> "$EDIT_LEDGER"
+        ;;
+    mcp__claude-in-chrome__*)
+        # Driving a real browser checks live state, so it counts as verification
+        mkdir -p "$LEDGER_DIR"
+        echo "$(date +%H:%M:%S) $TOOL" >> "$VERIFY_LEDGER"
+        ;;
     Grep|Glob)
         mkdir -p "$LEDGER_DIR"
         echo "$(date +%H:%M:%S) $TOOL" >> "$SEARCH_LEDGER"
@@ -46,7 +60,7 @@ case "$TOOL" in
         CMD=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
         [[ -z "$CMD" ]] && exit 0
         # Verification-type: tests, builds, status, health checks, diff, lint, live-run scripts
-        if echo "$CMD" | grep -qE '(--version|npm (run build|test)|pytest|jest|cargo test|go test|make test|uv run|vault-lint|visual-drift-lint|py_compile|bash -n|jq (-e |\.)|curl.*-[sI]|git[[:space:]]+(-C[[:space:]]+[^[:space:]]+[[:space:]]+)?(status|diff|log)|systemctl (status|is-active)|test -[fedrwx]|grep -[qcl]|wc -[lcw]|python3 (-c|-m)|node -e|pdfinfo|cmp -s|diff -r)'; then
+        if echo "$CMD" | grep -qE '(--version|npm (run build|test)|pytest|jest|cargo test|go test|make test|uv run|vault-lint|visual-drift-lint|py_compile|bash -n|jq (-e |\.)|curl.*-[sI]|git[[:space:]]+(-C[[:space:]]+[^[:space:]]+[[:space:]]+)?(status|diff|log)|systemctl (status|is-active)|test -[fedrwx]|grep -[qcl]|wc -[lcw]|python3 (-c|-m)|node -e|pdfinfo|cmp -s|diff -r|playwright test|agent-browser)'; then
             mkdir -p "$LEDGER_DIR"
             echo "$(date +%H:%M:%S) ${CMD:0:120}" >> "$VERIFY_LEDGER"
         fi

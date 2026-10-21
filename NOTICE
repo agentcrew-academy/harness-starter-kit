@@ -84,3 +84,24 @@ same origin.
 
     Source: https://github.com/awesome-skills/first-principles-skill
     License: MIT License
+
+
+7. skills/humanizer/
+----------------------
+The English workflow and pattern list are adapted from blader/humanizer v3.0.0,
+which in turn draws on Wikipedia's "Signs of AI writing" (WikiProject AI Cleanup).
+The Chinese guide and checkpoints are adapted from op7418/Humanizer-zh and
+converted to Taiwan Traditional Chinese. The model-fingerprint notes and two of
+the Chinese checkpoints come from Nanako0129/sepia.
+
+    Source: https://github.com/blader/humanizer
+    License: MIT License
+    Copyright (c) 2025 Siqi Chen
+
+    Source: https://github.com/op7418/Humanizer-zh
+    License: MIT License
+    Copyright (c) 2026 歸藏
+
+    Source: https://github.com/Nanako0129/sepia
+    License: MIT License
+    Copyright (c) 2026 Nanako Tsai

@@ -10,7 +10,10 @@ metadata:
 
 # Polite: Tone Rewriting (Warm & Empathetic / Formal Business / Formal Business + Warmth)
 
-Determine the mode before rewriting. Shared rule for both modes: **never invent circumstances or excuses for the other person** (e.g., assuming they "must have been busy lately" as the reason they didn't reply) — don't bring up situations they never actually mentioned; deal only with the facts or the request itself. Otherwise it tends to read as guilt-tripping (confirmed case, 2026-07-04: a follow-up email's line "I know things have probably been busy on your end" was flagged as landing that way).
+Determine the mode before rewriting. Two shared rules for every mode:
+
+- **Don't invent circumstances or excuses for the other person** (e.g., assuming they "must have been busy lately" as the reason they didn't reply). Deal only with what they actually said or the request itself; invented circumstances read as guilt-tripping.
+- **Don't add commitments the draft didn't make.** A rewrite changes tone, not the offer: no new free reviews, extra calls, or "send me your materials and I'll take a look" unless the original draft already offered it.
 
 ## Determining the mode
 
@@ -81,12 +84,16 @@ All four of these need to be present. Miss one and it's just B again:
 
 1. **Open by acknowledging what they already did** (borrowed from Mode A's "acknowledge first, then address"). They sent something, put materials together, gave you advance notice, followed through on a commitment — say so in the first sentence. It isn't flattery, it's showing you noticed. A follow-up/reminder email needs this too — acknowledge their last reply or commitment before asking for a status update.
    - "Thanks for laying out exactly where things stand — that makes it much easier for me to plan around."
+   - Acknowledge only something tied to this email's business. In a billing, admin, or contract email where they haven't done anything on this matter yet, skip the acknowledgment and open with the topic; praise for unrelated work reads as buttering them up before the invoice.
 2. **When they apologize or seem uneasy, actively take the blame off them.** If they say "sorry for the short notice," say plainly there's no need to apologize, and give a real reason.
    - "No need to apologize about the reschedule — knowing early actually makes it easier to plan around."
    - The shared rule at the top of this file still applies here: taking the blame off them is fine, but **don't invent circumstances for them** ("you've probably been busy lately" is off-limits). Only respond to what they actually said.
 3. **Soften every request** (borrowed from Mode A's rule 4): "You need to..." becomes "If it works for you, could you...". B's precision stays in the *content*, not the tone. Cap it at two "if you could"s per email — more than that starts to feel sticky.
 4. **Close by leaving a way out, and hand control back to them.** After stating the next step, add one line that says it's fine if this doesn't work, then sign off.
    - "If this time doesn't work for you, just let me know and we'll find another slot."
+   - A way out is only for something they **already agreed to** (the time, format, or scope of it). For something they haven't agreed to yet (a proposal, quote, pitch, invite, cold outreach), leave the way out off: "if you're not interested, just let me know" hands them a ready-made no. Those emails end at the next step and how to take it.
+
+**Warmth comes from these four moves, not from casual wording.** Every sentence should still read as acceptable in a Mode B letter; if one wouldn't, rewrite it.
 
 **Warmth can't change the facts.** Don't redefine how important something is just to soften the landing (a required deliverable doesn't become "just a nice-to-have"), don't soften a deadline or an amount, and don't turn "must" into "you could consider." Soften the sentence, not the content.
 

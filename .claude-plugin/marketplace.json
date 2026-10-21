@@ -1,0 +1,122 @@
+{
+  "name": "agentcrew-harness",
+  "owner": {
+    "name": "Dustin Yuchen Teng",
+    "url": "https://github.com/agentcrew-academy"
+  },
+  "metadata": {
+    "description": "A small Claude Code starter kit: five everyday skills plus hooks that stop unverified completion claims and ask before anything is sent out."
+  },
+  "plugins": [
+    {
+      "name": "agentcrew",
+      "source": "./",
+      "description": "Six skills: checkpoint (one-step session close) with neat-freak (its fact-reconciliation engine), polite (tone rewriting), humanizer (removes AI-sounding patterns), explain (plain-language re-explain), first-principles (decision decomposition).",
+      "strict": false,
+      "skills": [
+        "./skills/checkpoint",
+        "./skills/neat-freak",
+        "./skills/explain",
+        "./skills/polite",
+        "./skills/first-principles",
+        "./skills/humanizer"
+      ]
+    },
+    {
+      "name": "claim-guard",
+      "source": "./hooks/claim-guard",
+      "description": "Blocks the end of a turn when the AI claims 'verified' or 'not found' without having run a check or a search, or when it edited files after the last check.",
+      "strict": false,
+      "hooks": {
+        "PostToolUse": [
+          {
+            "matcher": "Bash|Grep|Glob|WebSearch|WebFetch|Write|Edit|MultiEdit|NotebookEdit|mcp__claude-in-chrome__.*",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "\"${CLAUDE_PLUGIN_ROOT}\"/claude-code/claim-ledger-tracker.sh"
+              }
+            ]
+          }
+        ],
+        "Stop": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "\"${CLAUDE_PLUGIN_ROOT}\"/claude-code/claim-evidence-guard.sh"
+              }
+            ]
+          }
+        ],
+        "SubagentStop": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "\"${CLAUDE_PLUGIN_ROOT}\"/claude-code/claim-evidence-guard.sh"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "write-manifest",
+      "source": "./hooks/write-manifest",
+      "description": "Silently records which files each session edited, so checkpoint stages only this session's changes when several sessions share a repo.",
+      "strict": false,
+      "hooks": {
+        "PostToolUse": [
+          {
+            "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "\"${CLAUDE_PLUGIN_ROOT}\"/claude-code/write-manifest.sh"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-emoji-guard",
+      "source": "./hooks/no-emoji-guard",
+      "description": "Blocks file writes that contain emoji and tells the AI what to use instead.",
+      "strict": false,
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "Write|Edit|MultiEdit",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}\"/claude-code/no-emoji-guard.py"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "block-outgoing-comms",
+      "source": "./hooks/block-outgoing-comms",
+      "description": "Asks you to confirm before any tool sends an email, chat message or post, so nothing goes out unseen.",
+      "strict": false,
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "^mcp__.*__(.*_)?(send|reply|forward|broadcast|publish|schedule|push)(_.*)?$",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "bash \"${CLAUDE_PLUGIN_ROOT}\"/claude-code/block-outgoing-comms.sh"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

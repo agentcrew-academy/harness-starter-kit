@@ -1,6 +1,5 @@
 {
   "_comment": "Merge the blocks you need into your ~/.claude/settings.json hooks object. If the same event name already exists, add to its hooks array — don't overwrite the whole section. Restart the session after registering for this to take effect.",
-
   "hooks": {
     "PreToolUse": [
       {
@@ -12,12 +11,21 @@
             "statusMessage": "Scanning for emoji..."
           }
         ]
+      },
+      {
+        "matcher": "^mcp__.*__(.*_)?(send|reply|forward|broadcast|publish|schedule|push)(_.*)?$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/block-outgoing-comms.sh",
+            "timeout": 5
+          }
+        ]
       }
     ],
-
     "PostToolUse": [
       {
-        "matcher": "Bash|Grep|Glob|WebSearch|WebFetch",
+        "matcher": "Bash|Grep|Glob|WebSearch|WebFetch|Write|Edit|MultiEdit|NotebookEdit|mcp__claude-in-chrome__.*",
         "hooks": [
           {
             "type": "command",
@@ -35,7 +43,6 @@
         ]
       }
     ],
-
     "Stop": [
       {
         "hooks": [
@@ -48,6 +55,16 @@
             "command": "LINT_CMD='npm run lint' FAIL_PATTERN='[1-9][0-9]* error' ~/.claude/hooks/lint-gate.sh",
             "timeout": 30,
             "statusMessage": "Running end-of-session checks..."
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/claim-evidence-guard.sh"
           }
         ]
       }

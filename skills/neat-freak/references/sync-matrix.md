@@ -17,6 +17,7 @@ Check this table when you're unsure which files a given fact-level change should
 | A decision is finalized | mark the decision file as finalized · **delete the superseded old conclusion, don't just annotate it** |
 | Technical approach changed | docs next to the code · README · related statements in rule files (CLAUDE.md / AGENTS.md) |
 | A rule or process changed | the rule file itself · check whether any hook/script is still running the old rule |
+| A remembered fact went stale, a relative date ("today", "recently") got saved, or the same fact sits in two memory files | the memory file and its index line: rewrite relative dates as `YYYY-MM-DD`, merge duplicates into one, delete finished todos, overturned decisions, and one-session context |
 
 ## Operating principles
 
@@ -24,3 +25,4 @@ Check this table when you're unsure which files a given fact-level change should
 2. **State changes take priority over new content.** The point of reconciliation is "which existing statements are now wrong," not "what more can be added."
 3. **Whether an external system counts as synced depends on the external system.** If the local file changed but the calendar/scheduling tool didn't, the sync isn't done.
 4. **Deletion is a legitimate action.** Stale conclusions, superseded decisions, and completed todos left in place only give the next reader (or your future self) the wrong answer.
+5. **Check where else the one-line version lives.** A status often exists in full in one file and as a one-line summary in another (a rollup line, a daily log, a memory note). When it changes, update both, and grep the old conclusion's keywords across files that cite it.

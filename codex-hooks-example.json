@@ -1,7 +1,6 @@
 {
   "_comment": "Codex version. Merge the blocks you need into your ~/.codex/hooks.json, and confirm ~/.codex/config.toml has hooks = true. If the same event name already exists, add to its hooks array — don't overwrite the whole section. Codex has a trust mechanism for hooks, so the first activation will ask you to confirm. Restart the session after registering for this to take effect.",
   "_note_matcher": "Listing tool names from both platforms in the matcher is intentional. Codex calls editing a file apply_patch and running a command exec or shell, but depending on version and configuration, Write / Edit / Bash can also show up. Casting a wider net is safer than missing one.",
-
   "hooks": {
     "PreToolUse": [
       {
@@ -13,12 +12,21 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "^mcp__.*__(.*_)?(send|reply|forward|broadcast|publish|schedule|push)(_.*)?$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.codex/hooks/block-outgoing-comms.sh",
+            "timeout": 5
+          }
+        ]
       }
     ],
-
     "PostToolUse": [
       {
-        "matcher": "Bash|Grep|Glob|exec|shell|WebSearch|web_fetch|WebFetch",
+        "matcher": "Bash|Grep|Glob|exec|shell|WebSearch|web_fetch|WebFetch|apply_patch|Write|Edit|MultiEdit",
         "hooks": [
           {
             "type": "command",
@@ -38,7 +46,6 @@
         ]
       }
     ],
-
     "Stop": [
       {
         "hooks": [

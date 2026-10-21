@@ -21,7 +21,7 @@ allowed-tools: Bash(git status *) Bash(git diff *) Bash(git log *) Agent Read
 
 **Trigger** (any one of these is enough):
 - The user explicitly asks for lite mode.
-- **Automatic downgrade**: the fact list is empty, and 5 or fewer files are attributable to this session. Delegating a closure like that just spends a whole subagent round-trip (measured at roughly 190k tokens in one real case) redoing something the main thread could finish in a handful of commands.
+- **Automatic downgrade**: the fact list is empty, and 5 or fewer files are attributable to this session. Delegating a closure like that spends a whole subagent round-trip redoing something the main thread could finish in a handful of commands.
 - All three hold at once: (1) your notes were updated as you went, not batched at the end; (2) the daily log is already written in-conversation and needs at most a line or two more; (3) there's no cross-file fact reconciliation to do.
 
 Fall back to `scoped` if there's a fact list, more than 5 attributable files, or a mixed-author file that needs a judgment call beyond what `stage-own-edits.sh` can make on its own.
@@ -45,6 +45,7 @@ Use the current platform's task/plan mechanism to build one closure plan; don't 
    - `session_summary`: 0–3 items each of what was completed / decided / any pitfalls hit.
    - `fact_list`: facts that changed → the files they affect; not just a list of touched files.
    - `daily_entries`: the condensed content to write into the daily log.
+   - `todo_closeouts`: todos in your master files that this session finished or moved forward, each with what to change (mark done with today's date, or rewrite the remaining step). Put anything you're unsure about in warnings for the user instead.
    - `repos`: repo, branch, attributable files, tests run.
    - `coverage`: every changed file, and every external action / scheduled item / payment / todo change, must be tagged `fact_delta: yes` (linked to the fact list) or `fact_delta: no` (with a one-line reason). Anything left unclassified blocks delegation.
 4. Compare against today's daily log, recent commits, and the current file state; if another session already wrote the same content more recently, mark `daily_action: skip_duplicate` — don't duplicate or backfill it.
@@ -66,7 +67,7 @@ The first instruction must tell it to read `references/closure-protocol.md` in f
 A subagent's report is a claim, not a fact:
 
 1. If sync edits were made, spot-read 1–2 of the files it claims to have changed.
-2. Confirm each item appears in the daily log exactly once.
+2. Confirm each item appears in the daily log exactly once: grep a key phrase from each `daily_entries` item, since a worker can report the log as written while the write never happened.
 3. Per repo, check the reported hash, `git log -1 --oneline`, and `HEAD == origin/<current-branch>`.
 4. Recheck `git status --short`: changes attributable to this session should be closed out; unrelated or concurrent changes should be left untouched and listed.
 

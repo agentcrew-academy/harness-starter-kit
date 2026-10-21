@@ -1,196 +1,181 @@
 > English | [中文版](README.zh-TW.md)
 
-# Four small tools that keep AI honest, ten ready-made skills, and a starter rules file
+# Five skills you'll use every day, plus a few small tools that keep AI honest
 
-> **Updated 2026-08-09**: Both interceptor hooks now ship in a Claude Code version and a Codex version, with the same underlying logic. Added the review-loop skill, bringing the total to six.
-> **Updated 2026-08-12**: Added info-diet (works out where your attention is actually going), bringing the total to seven.
-> **Updated 2026-08-14**: Added claude-md-template — a starter CLAUDE.md written to match the official guidance for the fifth-generation models, plus three optional rules files.
-> **Updated 2026-08-21**: Added phantom-pushback (catches the AI inventing an opinion you never held, then correcting you for it), bringing the total to ten.
-> **Updated 2026-09-04**: Added a fourth hook, write-manifest — not an interceptor, a silent recorder of which files a session actually touched, so a later closure step can tell your edits apart from another session's uncommitted work. `checkpoint`'s lite mode and mixed-author file handling both depend on it.
+> **Updated 2026-10-22**: The kit is now a core set. New: **humanizer** (removes the "AI voice" from a draft) and **block-outgoing-comms** (asks you before anything sends an email, message or post). You can now install with Claude Code's plugin commands, one line each. review-loop, info-diet, phantom-pushback, asd-ste100, iso-24495 and claude-md-template moved to `retired/`: still there to read, but no longer installed or maintained. Details in [`retired/README.md`](retired/README.md).
 
-Has this ever happened to you: you tell an AI "always run the tests before you say you're done," it does exactly that for the first three times, then forgets on the fourth — and doesn't tell you it forgot.
+Has this ever happened to you: you tell an AI "always run the tests before you say you're done," it does that the first three times, then forgets on the fourth, and doesn't tell you.
 
 That's why I built these.
 
-The problem is that a rule is just a piece of text. You write it down, the AI reads it, the AI understands it — but it's under no obligation to actually follow it. The longer the conversation gets, the more that text gets diluted. It's not lying to you on purpose. It genuinely isn't top of mind anymore.
+The problem is that a rule is just a piece of text. The AI reads it and understands it, but it's under no obligation to follow it. The longer the conversation gets, the more that text gets diluted. It's not lying on purpose. It genuinely isn't top of mind anymore.
 
-The approach here is: **don't ask it nicely — block it.** Turn "the thing I want it to do" into a check the computer enforces automatically. If it doesn't do the thing, it doesn't get to move on.
+The approach here: **don't ask it nicely, block it.** Turn "the thing I want it to do" into a check the computer enforces. If it doesn't do the thing, it doesn't get to move on.
 
 ---
 
-## You don't need to know how to code to install this
+## Install
 
-You don't have to do any of this by hand. Copy this page's URL, paste it to Claude Code or Codex, and say:
+There are two ways. Pick one.
+
+### Option A: Claude Code plugins (one line each)
+
+Type these into Claude Code, one at a time:
+
+```
+/plugin marketplace add agentcrew-academy/harness-starter-kit
+/plugin install agentcrew@agentcrew-harness
+/plugin install claim-guard@agentcrew-harness
+/plugin install block-outgoing-comms@agentcrew-harness
+```
+
+The first line tells Claude Code where to find this kit; each later line installs one piece.
+
+- `agentcrew` is the bundle of skills: checkpoint, neat-freak, polite, humanizer, explain and first-principles.
+- `claim-guard` and `block-outgoing-comms` are the two hooks I'd start with.
+- `write-manifest` and `no-emoji-guard` install the same way (for example `/plugin install write-manifest@agentcrew-harness`). Take `write-manifest` if you run several AI sessions on one project or want checkpoint's lite mode; take `no-emoji-guard` if you can't stand emoji in documents.
+- `lint-gate` isn't a plugin. It needs a check command only you can supply, so install it by hand (see Hooks).
+
+After installing, fully quit and restart Claude Code, or the new pieces won't take effect.
+
+### Option B: you don't need to know how to code
+
+Copy this page's URL, paste it to Claude Code or Codex, and say:
 
 > Help me install this. I don't know how to code, so walk me through it one step at a time and tell me what you're doing at each step.
 
-This folder includes an instruction manual written for AI (the file called `CLAUDE.md`). It will follow those instructions to ask you what you need, install things, adjust settings, and explain everything in plain language. All you have to do is answer its questions.
+This folder has an instruction manual written for AI (the file `CLAUDE.md`). It will ask what you need, install things, adjust settings, and explain it all in plain language. You just answer its questions.
 
-It'll start by asking you three things — roughly: "what do you mainly use your computer for," "has an AI ever told you something was done when it wasn't," and "do you mind if AI puts emoji in your documents." Just answer honestly — there's no wrong answer, and you can always add or remove pieces later.
-
-**The one thing to remember**: after installing, fully quit and restart Claude Code. The new pieces won't take effect until you do.
+Codex users: use this option. The plugin commands above are Claude Code's.
 
 ---
 
 ## A few terms, explained
 
-**Claude Code**: an AI assistant that can write code and edit files directly on your computer. This whole package is built for it.
+**hook**: a guard standing at the door. You can set a rule like "before the AI touches a file, the guard checks first," and if the guard says no, it's really no. Not a reminder, a block.
 
-**hook**: think of it as a guard standing at the door. You can set a rule like "before the AI touches a file, have the guard check first" — and if the guard says no, it's really no. This isn't a reminder. It's a block.
+**skill**: a pre-written set of steps. You say its name, the AI follows those steps, and you don't re-explain every time.
 
-**skill**: a pre-written set of steps for doing something. You say its name, and the AI follows those exact steps, so you don't have to re-explain yourself every time.
-
-**lint**: a tool that automatically catches small problems for you. The name comes from a washing machine's lint filter — the thing that catches the fuzz off your clothes. Code has an equivalent: extra whitespace, variables that got declared but never used, names that don't follow the project's convention. None of that will necessarily break the program, but it makes the code messier and harder to read. A lint tool runs once and hands you a list: "line 12 has trailing whitespace, line 40 declares a variable nobody uses."
+**plugin**: a box you install in one go. It can hold skills, hooks, or both. In Claude Code you add one with a typed line instead of copying files yourself.
 
 ---
 
-## Four hooks: three interceptors, one recorder
+## Five skills
 
-**Both platforms are covered.** Each tool has a `claude-code/` folder and a `codex/` folder underneath it, and the logic inside is identical — the only difference is the handful of lines tied to each platform's interface. Install whichever one matches the tool you use; if you use both, install both. The ledgers and state folders are kept separate per platform, so they won't collide.
+### checkpoint (with neat-freak)
 
-The first three below can block a write or hold up the end of a turn. The fourth, write-manifest, never blocks anything — it just keeps a quiet record, and other things (like checkpoint below) read that record later.
+**The problem**: ending a session is a pile of chores: write the log, pick files to save, upload, check it arrived. By hand you skip some; run twice, the log is written twice. **Call it**: say `/checkpoint`, or "wrap up."
 
-For exactly where the two versions differ, and what to change if you want to port another hook yourself, see the comparison table in [`hooks/README.md`](hooks/README.md).
+**What you get**: one pass that writes the log once, saves and uploads only this session's files, then checks the remote matches your computer, and ends with a short report. A fresh helper agent does the work and the main conversation double-checks its claims. Lite mode (`/checkpoint lite`) is for when you've kept notes in sync as you went: it finishes inline, with no helper agent, and uses the write-manifest hook below to know which files are yours.
 
+**neat-freak** is the engine checkpoint uses for a full fact check. It reconciles facts, not formatting: which project is at what stage, which contract got signed, which payment came in. It counts the current state with a script first, then edits files from that count, instead of the AI saying "all synced up" from memory. Install it with checkpoint. You can also call it alone with `/neat-freak`; it then tells you to run `/checkpoint` so the edits get saved.
+
+### polite
+
+**The problem**: a message is accurate but reads cold, blunt, or like a form letter. **Call it**: paste the draft and say "this sounds too harsh," "more formal," or "warmer."
+
+**What you get**: the draft rewritten in one of three modes. A is warm and empathetic (customer replies, bad news, apologies, saying no). B is formal business, for an announcement with no particular reader. C is formal business plus warmth, the default for a specific person (proposal, reschedule, quote, follow-up). Mode C ends with a two-pass check for a common mistake: wording that makes your decision sound like a favor, or presumes how the other person feels. In every mode it won't invent the other person's circumstances ("I know you've been busy lately" when they never said so) or add promises your draft didn't make.
+
+### humanizer
+
+**The problem**: a draft reads like a chatbot wrote it: stock phrases, everything in threes, a neat one-line summary at the end. **Call it**: paste the text and say "humanize this" (or 去 AI 味). Works on English and Chinese.
+
+**What you get**: a list of the AI patterns it found, then a rewrite that keeps what the text says. It is told not to add facts, names, numbers or quotes. Give it a sample of your writing and it matches that voice.
+
+One boundary: it only removes the AI feel, not adds politeness, and plain spoken style can read as casual in a business letter. For a letter to a specific client, student or partner, use `polite` mode C. Using both: `polite` sets the tone, `humanizer` goes last.
+
+### explain
+
+**The problem**: the AI's answer is full of jargon and you can't follow it. **Call it**: say `/explain`, optionally with a topic or a file path. With nothing added, it re-explains its own last reply.
+
+**What you get**: the same thing retold so a high schooler could follow. Short sentences, everyday comparisons, conclusion first. A technical term that has to stay gets a plain explanation in brackets the first time. No switching languages midway; names stay as written.
+
+### first-principles
+
+**The problem**: a decision looks reasonable only because everyone does it that way, or the current approach feels wrong and swapping approaches doesn't help. **Call it**: say "first principles" and describe the decision.
+
+**What you get**: it first asks whether the requirement should exist at all, and tries deleting it before optimizing it. Then it separates real constraints from habits, keeps only facts that can't be broken down further, and builds the smallest solution from those. It's for choices that are expensive to get wrong, not everyday ones. If requirements are fuzzy or the area is new to you, a separate mode first lists your known and not-yet-known unknowns.
+
+---
+
+## Hooks
+
+Each hook has a `claude-code/` and a `codex/` folder with the same logic; only a few lines tied to each platform's interface differ. Use the one for your tool; the comparison table is in [`hooks/README.md`](hooks/README.md).
 
 ### claim-guard: catches the gap between what it says it did and what it actually did
 
-This is the one I use the most myself.
+The one I use most myself. The AI says "I tested it, it works fine," but it never ran a test. It's not lying; it just "feels like" things should be fine, and says so in the same tone it would use if it knew. That sentence costs it nothing, so you can't tell true from false by tone.
 
-Here's the situation: the AI tells you "I tested it, it works fine." But it never ran a test. It's not lying to you — it just "feels like" things should be fine, and says so in exactly the same tone it would use if it actually knew. That sentence costs it nothing to say, which is exactly why you can't tell true from false by the tone alone.
+Two scripts. One quietly keeps the books, like a dashcam: which checks it ran, which files it edited, what it searched. The other steps in when the AI is about to end its turn and reconciles the record against its claims. Said "tests passed"? There must be a test run in the ledger. Said "couldn't find this"? There must be a search. If they don't match, it's blocked.
 
-So this tool does two things.
+It also blocks "done" when files were edited after the last check, since an earlier check doesn't cover later edits. Words inside Chinese corner quotes or backticks count as a mention, not a claim. When a helper agent finishes, the same check runs on its own record.
 
-One script quietly keeps the books in the background, logging which checks it actually ran and what it actually searched for during the conversation. Think of it as a dashcam — always recording, never saying a word.
+Install both scripts together or it silently stops working (the plugin does). It won't block at random: if data can't be read, it lets things through, and it only steps in when a specific claim has no record. It runs locally and costs nothing.
 
-The other script steps in right when the AI is about to end the conversation and reconciles the record against what it's claiming. Said "tests passed"? There'd better be a test run in the ledger. Said "couldn't find this feature"? There'd better be a search in the ledger. If the two don't match, it gets blocked — no wrapping up.
+### block-outgoing-comms: asks you before anything goes out
 
-Both scripts have to be installed together. Install just one, and the whole thing silently stops working.
+This hook doesn't forbid sending. It **asks you first**: it pauses, names the tool about to send, and waits for your yes, even in Claude Code's auto mode. It decides by the tool's name: send, reply, forward, broadcast, publish, schedule or push in the name means you get asked. It covers tools connected as MCP tools (the usual way email and chat apps plug in), and needs `jq`; without it, it lets the call through. Codex can't pause for a yes, so there it stops every send and you send the message yourself.
 
-It won't block things at random. If the data can't be read or is malformed, it lets things through by default. It only steps in when the AI made a specific claim with zero record behind it. The whole thing runs as a small local program — it won't cost you a cent.
+### write-manifest: keeps a receipt of which files this session touched
 
-### no-emoji-guard: keeps emoji out the door
+It never blocks anything; it only records. Each time the AI writes or edits a file, it adds the path to a per-session list (on Claude Code it also logs the exact before-and-after text).
 
-If you can't stand it when AI sprinkles smiley faces and checkmarks through a formal document, this one's for you.
+Why: with two sessions on one project, "which unsaved changes are mine" gets unclear, and a blind `git add -A` can sweep someone else's work into your save. With the list, the closing step picks out just this session's files. Checkpoint's lite mode needs it; if you run one session at a time and skip lite mode, skip this.
 
-It isn't a blocklist I threw together by feel — it's based on the official Unicode definition (Unicode is the standard the whole world agreed on for "which number maps to which character"). Whatever the official spec calls an emoji, this blocks.
+### no-emoji-guard: keeps emoji out of your files
 
-A few things look similar but aren't: the checkmark `✓`, the cross `✕`, the arrow `→`. Those are typographic symbols, and they're deliberately left alone.
+For when AI sprinkles smiley faces through a formal document.
 
-If you've got a whole folder you want to exempt, there's a setting at the top of the file for that. In my own notes app, some of these symbols do real work — deleting them would break my to-do tracking — so I whitelisted that entire folder.
-
-One honest limitation up front: if an emoji is hidden inside a web page using some special encoding trick, this won't catch it.
+It follows the official Unicode definition of emoji (the worldwide standard for which number maps to which character), not a blocklist I made up. The check mark `✓`, cross `✕` and arrow `→` are typographic symbols and are left alone. A setting at the top of the file exempts a folder. One limit: an emoji hidden in a web page by an encoding trick won't be caught.
 
 ### lint-gate: no check, no sign-off
 
-The simplest of the three. You give it a check command, and it runs that command whenever the AI tries to wrap up. If the check fails, it hands the errors back and makes the AI fix them before it's allowed to finish.
+You give it a check command, and it runs it when the AI tries to wrap up. If the check fails, the errors go back and the AI must fix them first. The command can be a code checker, a spell checker, or your own script. (A **lint** tool is an automatic checker for small problems, named after a washing machine's lint filter.)
 
-It's not limited to code checks. Whatever command you point it at is what it runs — a spelling checker, or a script you wrote yourself to check whether a document's formatting is correct. I personally use it to check my notes' formatting.
+You set the command in the file (the failure and pass text are optional). Only you know which command fits your project, so it isn't in the plugin: copy it in by hand, or ask Claude Code or Codex to set it up from this repo's instructions.
 
-Two settings, and you can drop it into any project.
-
-There's a piece of logic in the code you should never delete. Without it, if the AI hits an error it can't fix, it gets stuck in a loop — try to finish, get blocked, try to finish again, get blocked again — forever. That's the single easiest trap to fall into if you build a tool like this yourself, so I left a comment explaining it.
-
-### write-manifest: keeps a receipt of which files this session actually touched
-
-This one's different from the other three — it never blocks anything. It's a dashcam, not a guard.
-
-Every time the AI writes or edits a file, it quietly appends the path to a per-session list, and (on the Claude Code side) logs the exact before/after text too. Nothing reads that list on its own — it's there for something else to consult later.
-
-Here's the problem it solves: run two sessions against the same project at once, or come back to a session after a break, and "which of these uncommitted changes are mine" stops being obvious. A blind `git add -A` at that point can sweep someone else's in-progress work straight into your commit. With the manifest, a closing step can check exactly which files this session is responsible for, and for a file another session also touched, replay just this session's edits on top of the last commit instead of overwriting the whole thing (see `stage-own-edits.sh`, shipped with the `checkpoint` skill below).
-
-You'll only need this one if you run more than one AI session against the same project, or if you're using the `checkpoint` skill's lite mode. If you never do either, skip it.
-
----
-
-## Ten skills
-
-**explain**: call `/explain` and it retells whatever was just said in terms a high schooler could follow. No jargon, no slipping into another language mid-explanation. Use it when you can't follow what the AI is saying.
-
-**polite**: rewrites the tone of a message for you. Three modes — one warm and empathetic (for customer replies, breaking bad news, turning someone down), one formal-business (for an announcement with no specific reader in mind), and one that's formal-business plus warmth for when you're actually writing to someone you know (a proposal, a reschedule, a quote, a follow-up) — because the formal mode alone reads like a form letter once there's a name on it. That third mode ends with a two-pass check for the single most common mistake in business writing: phrasing that makes the decision sound like something you're graciously granting, and lines that presume how the other person feels or how busy they are. There's also one rule that runs through all three modes: never invent the other person's circumstances for them. Something like "I know you've probably been really busy lately" — if they never said that, don't put it in their mouth. It reads as manipulative.
-
-**first-principles**: rethink something from the ground up instead of copying how someone else did it. The core question, before you ever ask "how should I do this," is "should this even be done at all." It comes with a process for mapping out your unknowns, which works well when the requirements are still fuzzy or you're new to the whole area.
-
-**checkpoint**: finishes everything that needs doing at the end of a session, in one pass — writing the work log, choosing what to save, uploading it, and then double-checking it actually made it up there. The point is doing it in one pass; doing the same thing twice logs it twice. If most of a session was already kept in sync as you went, a lite mode skips the full round-trip and does the last few steps inline instead — it leans on the write-manifest hook above to know which files are actually yours to stage.
-
-**neat-freak**: does the reconciliation. Not formatting — facts. Which project is at what stage, which contract got signed, which payment came in, which to-do actually got finished a while ago. It first runs a script that mechanically counts up the current state — numbers that can't be faked — and only then edits files based on that count. Instead of letting the AI say "all synced up" from memory.
-
-**review-loop**: you ask AI to write something long — a proposal, a spec, a report. You read it, give feedback, it produces a second draft. You read that, give more feedback, it produces a third. By the fourth draft, you notice a section is just gone. You never asked for it to be cut. It never said it cut it.
-
-This is what stops that. Every section of the document gets a permanent ID, and the computer does the counting: ten sections in the last version, only nine findable in this one — it flags it and tells you exactly which one vanished. The moment you say "this section's approved," its content gets locked, and any further edit to it gets blocked too. It also turns the document into a web page with a comment box next to each section, where you pick "approve / revise / question / discuss," fill it in, and copy the whole thing back to the AI in one click. Don't feel like typing — talk it out, transcribe the recording, and paste that back instead.
-
-It ships with a regression suite: a fictional planning spec that reproduces three real bugs this tool has actually hit in the past. Run `bash skills/review-loop/examples/regression/run-test.sh` to verify it yourself.
-
-**info-diet**: works out where your attention is actually going. It reads the browsing history on your own computer and sorts it into four buckets — information you're taking in from outside, you looking at yourself (notifications, your own posts, your own dashboards), talking to people, and getting things done. Most people assume their problem is too much information; what actually turns up is usually something else — the time isn't going toward looking at the world, it's going toward watching how the world is looking at you.
-
-It only runs on your own computer — no network access, nothing uploaded. The organized results get saved to a file first, and the AI doesn't see them yet; it asks you if there's anything you'd rather it not see, you give it keywords, and it deletes based on those keywords — **while it still hasn't looked at the file**. Medical, job-hunting, dating, legal, and gambling categories get hidden automatically during the sorting step, no exceptions needed. If you want to go a step further and have it look at the titles of articles you actually read to judge information quality, that needs a separate, explicit authorization from you.
-
-The limitations are stated plainly, not hidden: it can't see your phone, it only supports browsers in the Chrome family, and it can't judge the quality of social media posts (all it gets there is an account name as the title).
-
-The first three are ready to use as-is. checkpoint and neat-freak need to be adjusted to match how you actually organize your own files before the numbers mean anything. The comparison table inside is a template — swap the left column for the things that actually happen in your work, and the right column for your own folder names. Copying mine won't help you; my folders don't look like yours.
-
-review-loop is a bit different from the others: it only works once you've reformatted a document into its tagged format. That's an extra step, but it's the only way to actually catch content disappearing without a trace. The first time you use it, try it on the included example before you run it on a real document.
-
-**asd-ste100**: a Simplified Technical English rewrite. Use it for English text that's going to be read directly by a machine, or by another AI, where a misread has a real cost — tool descriptions, error messages, instructions passed between agents. The core move is stripping out ambiguous words and multi-clause sentences.
-
-**iso-24495**: an ISO 24495-1 plain-language rewrite, with dedicated techniques for both English and Traditional Chinese. Use it for reports, letters, documentation — text where the goal is for the intended reader to understand it in one pass and know what to do next.
-
-**phantom-pushback**: you ask the AI to change the payment terms to two installments. It makes the change, then adds: "one thing I'd gently push back on — you may be assuming installments are always friendlier to cash flow, but..." You never said that. It needed to end on a note of independent judgment, had nothing to disagree with, so it invented an opinion, put it in your mouth, and corrected you for it.
-
-This is not the same as the AI being long-winded, and telling it to be brief won't fix it — the paragraph looks like real content, which is why it survives editing. The test this skill applies is one question: can you point at something you actually said, or something you actually wrote, where you hold that position? If not, the passage goes. Real objections stay: criticism of your code, your numbers, or your plan is never touched, and a genuine warning buried in a closing caveat gets moved to the top instead of deleted.
-
-Worth knowing why this happens: rules of the form "always give me the strongest counterargument" are a likely cause. They make disagreement compulsory, so when there's nothing to disagree with, the only way to comply is to make something up. The skill says so, and refuses to write the opposite rule either.
+Never delete the loop guard in the code: without it, an error the AI can't fix traps it in an endless try-block-retry loop. A comment explains it.
 
 ---
 
 ## How this kit differs from other repos
 
-There are plenty of Claude Code hook collections and starter kits on GitHub. Before deciding whether this one is for you, here's an honest comparison:
+An honest comparison with the many hook collections and starter kits on GitHub:
 
-**It's written for people who don't code.** Nearly every kit out there assumes you're a developer — the docs talk about test suites, CI, and architecture decision records. This one assumes nothing: you paste a URL, the AI walks you through the install in plain language, and every concept (hook, skill, lint) gets explained in one paragraph before it's used.
+**It's written for people who don't code.** Nearly every kit assumes you're a developer. This one assumes nothing: paste a URL, the AI walks you through the install, and every concept is explained first.
 
-**It goes after a failure nobody else names.** Existing tools protect tests from being deleted, or audit the work after the fact. claim-guard targets something different: the AI saying "I tested it, it works" *when it never ran anything*. A ledger records what actually happened; a reconciliation gate blocks the wrap-up when the claims and the record don't match — in real time, not in a post-mortem.
+**It goes after a failure nobody else names.** Existing tools protect tests from being deleted, or audit afterward. claim-guard targets the AI saying "I tested it, it works" *when it never ran anything*, and blocks it in real time, not in a post-mortem.
 
-**It covers all three layers in one place.** Enforcement (hooks), workflows (skills), and a lean rules-file template written to the current generation of models' official guidance. Most kits give you one of the three and stop there.
+**Hooks block, skills do the work.** Writing a rules file that fits your own work and data sensitivity is a different job, and that's what the paid pack below does.
 
-**It's bilingual by design.** Docs in English and Traditional Chinese, and the hooks catch claims in both languages out of the box — because the trigger patterns were built from real usage in both.
-
----
-
-## A starter rules file (claude-md-template)
-
-Earlier I said "a rule is just a piece of text, and the AI has no obligation to follow it" — that doesn't mean a rules file is useless. It means the file needs to be **short, and correct**. `claude-md-template/` is a starter CLAUDE.md written to match the official guidance for the newest generation of models: just three sections (your background, a small number of hard gates each backed by a reason, and reasoning context that lets it generalize on its own), plus three optional rules files for verification, delegation, and risk.
-
-Every line in it had to pass the same test to earn its place: "if you deleted this line, would the AI get something wrong? If not, delete it." Use that same test when you add your own rules later. For how to install it and why it's this short, see [`claude-md-template/README.md`](claude-md-template/README.md).
-
-The rules file handles "suggestions"; this repo's hooks handle "enforcement." They're meant to work together, not as an either-or choice.
+**It's bilingual by design.** Docs in English and Traditional Chinese, and claim-guard catches claims in both, because its trigger phrases came from real use in both.
 
 ---
 
 ## License
 
-MIT — meaning you can take it, use it, modify it, and sell it, freely, without paying me or asking permission.
+MIT, meaning you can take it, use it, modify it, and sell it, freely, without paying me or asking permission.
 
-A few pieces here are adapted from other people's work; the original authors and sources are listed in the `NOTICE` file. If you redistribute or reuse this, keep that file attached — it's the one thing MIT actually requires of you.
+A few pieces are adapted from other people's work, including the three upstream sources behind humanizer. `NOTICE` lists the original authors and sources. If you reuse this, keep that file attached. It's the one thing MIT requires of you.
 
 ---
 
 ## One thing to keep in mind
 
-Before you install any of this, have the AI read each script out loud to you, or at minimum have it explain what each one does.
+Before you install any of this, have the AI read each script out to you, or at least explain what each one does.
 
-These tools intercept what the AI is allowed to do, and that affects everything you work on afterward. That's true of this folder, and it's true of any package of scripts you find anywhere online. Don't install something just because it looks convenient.
+These tools intercept what the AI is allowed to do, which affects everything you work on afterward. That's true of this folder and of any package of scripts you find online. Don't install something just because it looks convenient.
 
 ---
 
 ## That's everything here
 
-Everything above can be used on its own — none of it depends on anything else.
+Everything here can be used on its own, with two exceptions: checkpoint should be installed together with neat-freak, and checkpoint's lite mode needs the write-manifest hook.
 
-But the judgment call of "what should become an interceptor hook, what belongs in a rules file, and what should become a skill" — that's a separate thing entirely. I've written up that decision method, along with the mistakes I've made along the way, into a paid resource pack:
+But the judgment call of "what should become a blocking hook, what belongs in a rules file, and what should become a skill" is a separate thing entirely. The paid pack asks you six questions, then builds a rules file that fits your work and how sensitive your data is, and installs the matching hooks and skills. It comes with a pitfall database that keeps being updated, and it automatically keeps your rules file from growing bloated over time:
 
 <https://www.agentcrew.cc/products/harness-asset-pack>
 
-Other courses and tools live at <https://www.agentcrew.cc>.
+Other courses and tools: <https://www.agentcrew.cc>.
 
 The free stuff here won't expire, and it won't ever get pulled and turned into a paid product later. Use it freely.

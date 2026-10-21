@@ -32,12 +32,14 @@
 LEDGER_DIR="$HOME/.cache/claude-guard-hooks"
 
 INPUT=$(cat)
-SID=$(echo "$INPUT" | jq -r '.session_id // "default"' 2>/dev/null) || exit 0
+# Also wired to SubagentStop: agent_id keys the subagent's own ledger
+SID=$(echo "$INPUT" | jq -r '.agent_id // .session_id // "default"' 2>/dev/null) || exit 0
 
 VERIFY_LEDGER="$LEDGER_DIR/${SID}.verify"
 SEARCH_LEDGER="$LEDGER_DIR/${SID}.search"
+EDIT_LEDGER="$LEDGER_DIR/${SID}.edit"
 
-cleanup() { rm -f "$VERIFY_LEDGER" "$SEARCH_LEDGER"; }
+cleanup() { rm -f "$VERIFY_LEDGER" "$SEARCH_LEDGER" "$EDIT_LEDGER"; }
 
 # Second pass (already blocked once this turn): let it through and clear the ledger
 STOP_ACTIVE=$(echo "$INPUT" | jq -r '.stop_hook_active // false' 2>/dev/null)
@@ -47,7 +49,14 @@ if [[ "$STOP_ACTIVE" == "true" ]]; then
 fi
 
 LAST_MSG=$(echo "$INPUT" | jq -r '.last_assistant_message // empty' 2>/dev/null)
+# SubagentStop may omit the message: read the last assistant text from the subagent transcript
+if [[ -z "$LAST_MSG" ]]; then
+    TP=$(echo "$INPUT" | jq -r '.agent_transcript_path // empty' 2>/dev/null)
+    [[ -f "$TP" ]] && LAST_MSG=$(jq -rs '[.[] | select(.type=="assistant") | .message.content[]? | select(.type=="text") | .text] | last // empty' "$TP" 2>/dev/null)
+fi
 [[ -z "$LAST_MSG" ]] && exit 0
+# Quoted text is a mention, not a claim: drop 「…」 and `…` spans before matching
+LAST_MSG=$(printf '%s' "$LAST_MSG" | LC_ALL=en_US.UTF-8 sed -E 's/「[^」]*」//g; s/`[^`]*`//g')
 
 # A) Verification claims (English + Chinese)
 VERIFY_TRIGGERS='verified|confirmed|all passing|tests? pass|build passes|all green|works now|working now|deployed and verified|驗證通過|測試通過|驗證無誤|實測通過|實測有效|全數通過|建置通過|跑通|已驗證|確認無誤'
@@ -60,6 +69,13 @@ if echo "$LAST_MSG" | grep -iqE "$VERIFY_TRIGGERS"; then
   "reason": "CLAIM-EVIDENCE GUARD: You claimed 'verified / tests pass / confirmed working', but this session's ledger has no record of any verification-type command (test, build, status, diff, live run). A completion claim is a factual claim — run the verification command first, then state the result; if it genuinely can't be verified automatically, rephrase as 'not yet verified, needs manual confirmation'."
 }
 EOF
+        exit 0
+    fi
+    # Stale verification: files were edited after the last verification command
+    if [[ -s "$EDIT_LEDGER" && "$EDIT_LEDGER" -nt "$VERIFY_LEDGER" ]]; then
+        LAST_EDIT=$(tail -1 "$EDIT_LEDGER"); LAST_VERIFY=$(tail -1 "$VERIFY_LEDGER")
+        cleanup
+        jq -cn --arg e "$LAST_EDIT" --arg v "$LAST_VERIFY" '{decision: "block", reason: ("CLAIM-EVIDENCE GUARD (stale verification): you claimed verified / tests pass, but files were edited after the last verification command, so it did not cover the current code.\n  Last verification: " + $v + "\n  Later edit: " + $e + "\nRe-run the verification before claiming it; if this change needs no test (docs, comments), say edited, not re-verified.")}'
         exit 0
     fi
 fi

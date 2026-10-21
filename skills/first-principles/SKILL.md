@@ -107,3 +107,9 @@ The recommendation, the single most important finding from this decomposition, a
 - **The Complexity Trap**: the solution is more complex than the problem. Remove one component; does the core still work? If yes, that component wasn't essential. Repeat until removal breaks it.
 - **The Analogy Trap**: "Company X does it this way." What problem were they actually solving? Are our constraints the same in every relevant dimension?
 - **The Legacy Trap**: maintaining compatibility with decisions that no longer serve us. Why was it decided? Do those conditions still exist? What is the true cost of change versus the cost of keeping it?
+
+## Additional Resources
+
+- `references/elon-musk-examples.md`: real-world examples from SpaceX and Tesla
+- `references/software-examples.md`: software engineering applications
+- `examples/architecture-review.md`: a full first-principles analysis of a microservices decision

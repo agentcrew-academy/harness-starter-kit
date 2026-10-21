@@ -1,6 +1,6 @@
 ---
 name: neat-freak
-description: "Deep fact reconciliation for KB masters, project docs, and authorized memory. Use for /neat-freak, full reconciliation, knowledge sync, doc sync, memory cleanup. With checkpoint, enable full mode instead of a second run."
+description: "Deep fact reconciliation for KB masters, project docs, and authorized memory. Use for /neat-freak, full reconciliation, knowledge sync, doc sync, memory cleanup. With checkpoint, enable full mode instead of a second run; a standalone run ends with /checkpoint."
 ---
 
 # Neat Freak — the fact-reconciliation engine

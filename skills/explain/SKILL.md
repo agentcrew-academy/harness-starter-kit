@@ -50,6 +50,7 @@ This is optional acceleration, not a requirement — everything else in this fil
    - If a technical term genuinely has no good equivalent, or the original term is actually clearer than any translation (e.g., API, SaaS, PDF), you can keep the original term — but **immediately follow it with a plain-language explanation in parentheses** the first time it appears. Example: "API (a way for two pieces of software to talk to each other)."
    - Only explain it the first time it shows up; after that you can use it directly.
    - Don't drop jargon like "SOW," "addendum," "roster," "pipeline," or "enterprise" without explaining it — either use an everyday word instead, or add a parenthetical explanation.
+   - Names of people and companies are the exception: keep them exactly as written. Don't translate, transliterate, or add titles ("John" stays "John", not "Manager John"); a changed name no longer matches the person the reader knows.
 2. **No jargon, no abbreviations.** Say "spreadsheet" instead of "workbook file," say "pay part of it upfront" instead of "remit an initial installment."
 3. **Short sentences.** One idea per sentence — don't cram three concepts into one sentence.
 4. **Use comparisons and everyday examples.** Give an everyday analogy before anything abstract ("it's like...").
@@ -62,11 +63,11 @@ This is optional acceleration, not a requirement — everything else in this fil
 1. **One-sentence summary**: what this actually is / what happened.
 2. **Plain-language breakdown**: 2–4 points, each with a comparison or example.
 3. **What it means for you**: good news or bad, whether you need to do anything, whether it costs money, any risk.
-4. **Offer to go deeper**: if there's a more detailed layer, ask whether the user wants it — don't dump everything at once.
+4. **Going deeper**: if there's a more detailed layer, cover it briefly in a last short section so the reader can choose to read on. Don't end by asking "want me to go on?" — finish the explanation in one reply.
 
 ## Self-check (run through before sending)
 
-- Any jargon or foreign-language term left unexplained? → Fix it.
+- Any jargon or foreign-language term left unexplained? → Fix it. (Names of people and companies don't count; changing a name is the error.)
 - Any sentence that requires understanding another term first? → Break it apart and explain that first.
 - Could a high-schooler read this and repeat it back in their own words? → If not, simplify further.
 
