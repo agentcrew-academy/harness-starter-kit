@@ -20,7 +20,7 @@ If the person is clearly an engineer, switch to a normal technical conversation 
 
 | Piece | What it does | Needs |
 |---|---|---|
-| skills `checkpoint` + `neat-freak` | Close a work session in one step: log what happened, reconcile notes, commit only this session's changes | plugin `agentcrew-closure` installs both; lite mode also needs `write-manifest`. Only for users who keep a daily log and notes or projects in git |
+| skill `checkpoint` | Close a work session in one step: log what happened, reconcile notes (`/checkpoint full` for a full fact check), commit only this session's changes | plugin `agentcrew-closure`; lite mode also needs `write-manifest`. Only for users who keep a daily log and notes or projects in git |
 | skill `polite` | Rewrite a draft in a warmer or more formal tone | nothing |
 | skill `humanizer` | Remove AI-sounding patterns from a draft, English or Chinese | nothing |
 | skill `explain` | Re-explain the last answer (or a file) in plain words | nothing |
@@ -40,7 +40,7 @@ Ask all at once, not one at a time:
 3. **Is the AI connected to your email, chat or social accounts?** If yes, install `block-outgoing-comms`.
 4. **Do you mind emoji in your documents?** If not, skip `no-emoji-guard`.
 
-The four everyday skills (`agentcrew`) suit almost everyone; install them unless the user says no. Install `agentcrew-closure` (checkpoint + neat-freak) only if they keep a daily log and notes or projects in git. `lint-gate` is only for people who write code and already have a check command (`npm run lint`, `pytest`, and so on).
+The four everyday skills (`agentcrew`) suit almost everyone; install them unless the user says no. Install `agentcrew-closure` (checkpoint) only if they keep a daily log and notes or projects in git. `lint-gate` is only for people who write code and already have a check command (`npm run lint`, `pytest`, and so on).
 
 ## Check before you start
 
@@ -57,7 +57,7 @@ claude plugin marketplace add agentcrew-academy/harness-starter-kit
 claude plugin install claim-guard@agentcrew-harness
 claude plugin install block-outgoing-comms@agentcrew-harness
 claude plugin install agentcrew@agentcrew-harness            # polite, humanizer, explain, first-principles
-claude plugin install agentcrew-closure@agentcrew-harness    # checkpoint + neat-freak, only if they keep a daily log / notes in git
+claude plugin install agentcrew-closure@agentcrew-harness    # checkpoint, only if they keep a daily log / notes in git
 claude plugin install write-manifest@agentcrew-harness        # if they use checkpoint lite mode
 claude plugin install no-emoji-guard@agentcrew-harness        # if they said yes to question 4
 ```
@@ -92,8 +92,8 @@ Copy each folder under `skills/` into `~/.claude/skills/`, keeping the folder. N
 
 ## After installing the skills
 
-`checkpoint` and `neat-freak` work better once they know where the user keeps notes and projects.
-Ask, then help them edit the table in `skills/neat-freak/references/sync-matrix.md` (plugin installs keep it under `~/.claude/plugins/cache/`; a plugin update replaces that copy, so keep a backup of the edited table).
+`checkpoint` works better once they know where the user keeps notes and projects.
+Ask, then help them edit the table in `skills/checkpoint/references/sync-matrix.md` (plugin installs keep it under `~/.claude/plugins/cache/`; a plugin update replaces that copy, so keep a backup of the edited table).
 If they can't answer now, skip it; the skills still run, the reconciliation is just less accurate.
 
 ## One thing you must say once installation is done

@@ -30,8 +30,10 @@ parsed straight from Unicode's official data file — I didn't compile them myse
     Copyright (c) 1991-2025 Unicode, Inc. All rights reserved.
 
 
-3. skills/neat-freak/
------------------------
+3. skills/checkpoint/references/sync-protocol.md and scripts/enumerate.sh
+-----------------------------------------------------------------------
+Originally the separate skill skills/neat-freak/, merged into checkpoint on
+2026-10-25.
 Adapted from the skill of the same name in KKKKhazix/khazix-skills. The main file
 has been substantially rewritten and shrunk (originally 210 lines / 15KB, now 49
 lines / 2.2KB), and the whole process has been reworked: it now chains into

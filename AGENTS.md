@@ -28,7 +28,7 @@ The interface differences between the two platforms are in the table in `hooks/R
 
 The six folders under `skills/` are plain-text instructions and work in Codex as-is. Copy them into `~/.codex/skills/` (the `.agents/skills/` links in this repo point at the same folders).
 
-`checkpoint` and `neat-freak` mention a "subagent"; use whatever Codex calls its equivalent.
+`checkpoint` mentions a "subagent"; use whatever Codex calls its equivalent.
 
 ## Don't pretend it's installed
 

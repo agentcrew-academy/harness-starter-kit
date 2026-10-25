@@ -37,7 +37,7 @@ Also check for a `TEAM_GUIDE.md` or `.agents.md` in the project — these are Co
 
 **Load priority**: workspace > project-agent > personal-agent > managed/local > bundled > extra dirs. A same-named skill at a higher priority overrides a lower one.
 
-OpenClaw has no separate "memory file + index" mechanism either; cross-session information can go in a project-root markdown file (CLAUDE.md / AGENTS.md / equivalent), mirroring the Codex approach. Frontmatter supports a `metadata.openclaw` field for load-time gating (filtering by OS, environment variable, or binary dependency), but it's not required for neat-freak.
+OpenClaw has no separate "memory file + index" mechanism either; cross-session information can go in a project-root markdown file (CLAUDE.md / AGENTS.md / equivalent), mirroring the Codex approach. Frontmatter supports a `metadata.openclaw` field for load-time gating (filtering by OS, environment variable, or binary dependency), but checkpoint doesn't need it.
 
 ## OpenCode
 

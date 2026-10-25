@@ -1,5 +1,5 @@
 #!/bin/bash
-# neat-freak step-1 mechanical enumeration script — produces unforgeable inventory evidence.
+# checkpoint fact reconciliation, step 1: mechanical enumeration script — produces unforgeable inventory evidence.
 # Usage: enumerate.sh [--memory <memory-dir>] [--vault <kb-root>] [<project-root> ...]
 # --vault: knowledge-base reconciliation (daily-log <-> master-file done-marker cross-check, missing tags, fake dates, cross-file duplicate todos)
 # --memory: memory health check (broken index links, relative-time references)
@@ -28,7 +28,7 @@ DONE_MARKER="${DONE_MARKER:-✅}"
 # Due-date marker used in your master files, appearing as "<DATE_MARKER> YYYY-MM-DD". Override via DATE_MARKER.
 DATE_MARKER="${DATE_MARKER:-📅}"
 
-echo "=== neat-freak enumeration @ $(date '+%Y-%m-%d %H:%M %z') ==="
+echo "=== checkpoint sync enumeration @ $(date '+%Y-%m-%d %H:%M %z') ==="
 
 if [[ -n "$MEMORY_DIR" ]]; then
   if [[ -d "$MEMORY_DIR" ]]; then

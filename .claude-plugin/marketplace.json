@@ -81,11 +81,10 @@
     {
       "name": "agentcrew-closure",
       "source": "./",
-      "description": "checkpoint (one-step session close) with neat-freak (its fact-reconciliation engine). Assumes you keep a daily log and your notes or projects in git; if you don't, skip this one.",
+      "description": "checkpoint: one-step session close, with a full fact check via /checkpoint full (neat-freak merged in). Assumes you keep a daily log and your notes or projects in git; if you don't, skip this one.",
       "strict": false,
       "skills": [
-        "./skills/checkpoint",
-        "./skills/neat-freak"
+        "./skills/checkpoint"
       ]
     },
     {

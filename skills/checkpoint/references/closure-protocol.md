@@ -19,7 +19,7 @@ Write it once following your own log-format conventions (if you have a separate 
 
 - `git-only`: skip.
 - `scoped` with an empty fact list: skip, report `sync: skipped (no fact delta)`.
-- Otherwise: read `<neat-freak-skill-dir>/references/sync-protocol.md` in full, passing it the manifest's mode, memory_mode, fact list, and paths.
+- Otherwise: read `<checkpoint-skill-dir>/references/sync-protocol.md` in full, passing it the manifest's mode, memory_mode, fact list, and paths.
 
 The sync protocol only reconciles facts — it does not commit. Move to the next section once it's done.
 

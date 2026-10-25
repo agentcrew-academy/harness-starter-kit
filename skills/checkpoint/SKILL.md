@@ -1,17 +1,17 @@
 ---
 name: checkpoint
-description: "Close a session once: daily log, optional fact sync, selective commit/push, and remote verification. Use for /checkpoint, end of session, save, push, commit and push, or checkpoint + neat-freak. Lite mode: inline, no subagent, for sessions already kept in sync."
+description: "Close a session once: daily log, fact reconciliation (master files, project docs, memory), selective commit/push, and remote verification. Use for /checkpoint, end of session, save, push, commit and push. Full: full reconciliation, knowledge sync, memory cleanup. Lite mode: inline, no subagent, for sessions already kept in sync."
 allowed-tools: Bash(git status *) Bash(git diff *) Bash(git log *) Agent Read
 ---
 
 # Checkpoint — the single closure entry point
 
-`checkpoint` is the public closure entry point; `neat-freak` is the fact-reconciliation engine it can optionally call. When both are named at once, run exactly one closure flow — don't summarize, delegate, write the daily log, or verify twice.
+`checkpoint` is the single closure entry point. Its fact-reconciliation engine lives in `references/sync-protocol.md` (neat-freak was merged into this skill on 2026-10-25).
 
 ## Modes
 
 - `scoped` (default): write the daily log once; run a targeted reconciliation only if there's a fact list, then commit + push.
-- `full`: the user explicitly named `neat-freak`, knowledge sync, memory cleanup, or a full closure — run the complete GATE reconciliation before commit + push.
+- `full`: the user typed `/checkpoint full`, or asked for a full reconciliation, knowledge sync, memory cleanup, or a full closure (formerly `/neat-freak`) — run the complete GATE reconciliation before commit + push.
 - `lite`: the user asks for `/checkpoint lite` or lite mode. **The main thread finishes it directly — no subagent, no manifest.** See §0 below.
 - `git-only`: only when the user explicitly says no log / no sync.
 
@@ -37,7 +37,7 @@ Fall back to `scoped` if there's a fact list, more than 5 attributable files, or
 
 ## 1. The main thread builds the closure manifest exactly once
 
-Use the current platform's task/plan mechanism to build one closure plan; don't build a second one for neat-freak.
+Use the current platform's task/plan mechanism to build one closure plan, and only one.
 
 1. Get the date and timezone with `date`.
 2. Check `git status --porcelain`, `git diff --stat HEAD`, and the current branch for the current repo (and any other project roots listed in the manifest).
@@ -51,7 +51,7 @@ Use the current platform's task/plan mechanism to build one closure plan; don't 
 4. Compare against today's daily log, recent commits, and the current file state; if another session already wrote the same content more recently, mark `daily_action: skip_duplicate` — don't duplicate or backfill it.
 5. The manifest must include `mode`, `memory_mode`, the folder for whichever process scripts are currently in use, the memory folder, the knowledge base root, and every project folder being closed out.
 
-`memory_mode` defaults to `read-only`; it's only `update` when the user explicitly asked for neat-freak, memory sync, or memory cleanup.
+`memory_mode` defaults to `read-only`; it's `update` in `full` mode, or when the user explicitly asked for memory sync or memory cleanup.
 
 ## 2. Execute exactly once
 
@@ -60,7 +60,7 @@ Hand the manifest to a fresh-context, general-purpose bounded subagent:
 - Codex: use `fork_turns: "none"`, prompt carries only the manifest and this file's path.
 - Claude Code: use a fresh general-purpose Agent/Task subagent with `model: sonnet`; it won't see the main thread's conversation history but still loads applicable CLAUDE.md / permissions. The delegation prompt carries only the manifest and this file's path.
 
-The first instruction must tell it to read `references/closure-protocol.md` in full, not spawn any further subagents, and not separately invoke neat-freak. If the platform has no subagent support, or the task is a single-repo `git-only`, the main thread follows that protocol directly.
+The first instruction must tell it to read `references/closure-protocol.md` in full, and not spawn any further subagents. If the platform has no subagent support, or the task is a single-repo `git-only`, the main thread follows that protocol directly.
 
 ## 3. Main-thread verification
 

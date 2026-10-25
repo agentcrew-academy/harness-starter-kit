@@ -4,6 +4,8 @@
 
 幾個讓 AI 老實交代自己做了什麼的小 hook，加上四個天天用得到的 skill。
 
+> **2026-10-25 更新**：neat-freak 併進 checkpoint。原本打 `/neat-freak` 的地方改打 `/checkpoint full`；更新 `agentcrew-closure` plugin 之後，獨立的 `/neat-freak` 就不在了。
+
 > **2026-10-22 更新**：這包東西縮成核心。新增 **humanizer**（把文字裡的 AI 味去掉）和 **block-outgoing-comms**（寄信、發訊息、發文之前先問你）。現在可以用 Claude Code 的 plugin 指令一行安裝。checkpoint 和 neat-freak 拆成獨立的 `agentcrew-closure`，因為它們假設你有每日日誌、筆記放在 git 裡。review-loop、info-diet、phantom-pushback、asd-ste100、iso-24495 與 claude-md-template 已移除。想看舊版可切到 git 標籤 `retired-archive-2026-10-22`，那裡的東西不再修。
 
 你有沒有遇過這種事：你明明告訴 AI「每次改完程式碼都要先跑測試」，它前三次乖乖照做，第四次就忘了，而且忘記的時候完全不會講。
@@ -35,7 +37,7 @@
 
 - `claim-guard` 跟 `block-outgoing-comms` 是我建議先裝的兩個 hook。
 - `agentcrew` 是四個天天用得到的 skill：polite、humanizer、explain、first-principles。
-- `agentcrew-closure` 是 checkpoint 加 neat-freak，一步收工（`/plugin install agentcrew-closure@agentcrew-harness`）。它假設你有每日日誌、筆記或專案放在 git 裡；沒有的話不用裝。
+- `agentcrew-closure` 就是 checkpoint，一步收工（`/plugin install agentcrew-closure@agentcrew-harness`）。它假設你有每日日誌、筆記或專案放在 git 裡；沒有的話不用裝。
 - `write-manifest` 和 `no-emoji-guard` 也能用同樣的方式裝（`/plugin install write-manifest@agentcrew-harness`，另一個照改名字）。如果你會同時開好幾個 AI 對話處理同一個專案，或想用 checkpoint 的精簡模式，就裝 `write-manifest`。如果你受不了文件裡出現表情符號，就裝 `no-emoji-guard`。
 - `lint-gate` 不在 plugin 裡。它要一個只有你知道的檢查指令，所以要手動裝（下面有說明）。
 
@@ -133,9 +135,9 @@
 
 ## Skills
 
-### checkpoint（搭配 neat-freak）
+### checkpoint
 
-這兩個是獨立的 plugin `agentcrew-closure`。它假設你有每日日誌、筆記或專案放在 git 裡；沒有的話跳過。
+它是獨立的 plugin `agentcrew-closure`。它假設你有每日日誌、筆記或專案放在 git 裡；沒有的話跳過。
 
 **解決什麼問題**：一場工作結束時，有一堆零碎的收尾。寫工作日誌、挑要存檔的檔案、上傳、確認真的傳上去了。自己做會漏；叫 AI 做兩次，日誌就會被寫兩遍。
 
@@ -143,7 +145,7 @@
 
 **你會得到什麼**：一次做完。日誌只寫一次，只存檔、上傳屬於這場對話的檔案，最後確認遠端的內容跟你電腦上的一致，再給你一份簡短的報告。預設是派一個乾淨腦袋的幫手代理去做，主線再回頭抽查它說的對不對。另外有精簡模式（`/checkpoint lite`）：如果你這場一直邊做邊同步筆記，它就直接在主線把最後幾步做完，不派幫手。精簡模式要靠下面的 write-manifest hook 才知道哪些檔案是你的。
 
-**neat-freak** 是 checkpoint 要做完整對帳時用的引擎。它對的是事實，不是格式：哪個案子進度到哪、哪份合約簽了、哪筆錢收了、哪個待辦其實早就做完了。它會先跑一支腳本把現況機械式地數一遍，再拿這個結果去改檔案，而不是讓 AI 憑印象說一句「我同步好了」。它要跟 checkpoint 一起裝。你也可以單獨用 `/neat-freak` 叫它；做完它會提醒你接著跑 `/checkpoint`，這樣改動才會被存起來。
+**完整對帳**（`/checkpoint full`，以前是獨立的 neat-freak）：它對的是事實，不是格式：哪個案子進度到哪、哪份合約簽了、哪筆錢收了、哪個待辦其實早就做完了。它會先跑一支腳本把現況機械式地數一遍，再拿這個結果去改檔案，而不是讓 AI 憑印象說一句「我同步好了」。
 
 ### polite
 
@@ -213,7 +215,7 @@ MIT，意思是你可以隨便拿去用、拿去改、拿去賣，不用付錢�
 
 ## 這裡只有這些
 
-這裡的東西都能單獨拿去用，只有兩個例外：checkpoint 要跟 neat-freak 一起裝（`agentcrew-closure` 會一起裝好），checkpoint 的精簡模式要有 write-manifest。
+這裡的東西都能單獨拿去用，只有一個例外：checkpoint 的精簡模式要有 write-manifest。
 
 但「什麼事情該做成會擋人的 hook、什麼該留在規則檔、什麼該做成 skill」，這個判斷本身是另一回事。付費包會問你六個問題，依你的工作與資料敏感度生成一套合身的規則檔，裝好對應的 hooks 與 skills，附一個會持續更新的踩坑資料庫，並自動守住規則檔不越寫越肥：
 

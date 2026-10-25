@@ -4,6 +4,8 @@
 
 A few small hooks that make AI tell the truth about what it did, plus four skills you'll use every day.
 
+> **Updated 2026-10-25**: neat-freak is now part of checkpoint. Use `/checkpoint full` where you used `/neat-freak`; after updating the `agentcrew-closure` plugin the separate `/neat-freak` skill is gone.
+
 > **Updated 2026-10-22**: The kit is now a core set. New: **humanizer** (removes the "AI voice" from a draft) and **block-outgoing-comms** (asks you before anything sends an email, message or post). You can now install with Claude Code's plugin commands, one line each. checkpoint and neat-freak are their own plugin, `agentcrew-closure`, because they assume you keep a daily log and notes in git. review-loop, info-diet, phantom-pushback, asd-ste100, iso-24495 and claude-md-template were removed. To read them, check out the git tag `retired-archive-2026-10-22`; they get no fixes.
 
 Has this ever happened to you: you tell an AI "always run the tests before you say you're done," it does that the first three times, then forgets on the fourth, and doesn't tell you.
@@ -35,7 +37,7 @@ The first line tells Claude Code where to find this kit; each later line install
 
 - `claim-guard` and `block-outgoing-comms` are the two hooks I'd start with.
 - `agentcrew` is four everyday skills: polite, humanizer, explain and first-principles.
-- `agentcrew-closure` is checkpoint plus neat-freak, the one-step session close (`/plugin install agentcrew-closure@agentcrew-harness`). It assumes you keep a daily log and your notes or projects in git. If you don't, skip it.
+- `agentcrew-closure` is checkpoint, the one-step session close (`/plugin install agentcrew-closure@agentcrew-harness`). It assumes you keep a daily log and your notes or projects in git. If you don't, skip it.
 - `write-manifest` and `no-emoji-guard` install the same way (for example `/plugin install write-manifest@agentcrew-harness`). Take `write-manifest` if you run several AI sessions on one project or want checkpoint's lite mode; take `no-emoji-guard` if you can't stand emoji in documents.
 - `lint-gate` isn't a plugin. It needs a check command only you can supply, so install it by hand (see Hooks).
 
@@ -115,7 +117,7 @@ Never delete the loop guard in the code: without it, an error the AI can't fix t
 
 ## Skills
 
-### checkpoint (with neat-freak)
+### checkpoint
 
 A separate plugin, `agentcrew-closure`. It assumes you keep a daily log and your notes or projects in git; without those, skip it.
 
@@ -123,7 +125,7 @@ A separate plugin, `agentcrew-closure`. It assumes you keep a daily log and your
 
 **What you get**: one pass that writes the log once, saves and uploads only this session's files, then checks the remote matches your computer, and ends with a short report. A fresh helper agent does the work and the main conversation double-checks its claims. Lite mode (`/checkpoint lite`) is for when you've kept notes in sync as you went: it finishes inline, with no helper agent, and uses the write-manifest hook below to know which files are yours.
 
-**neat-freak** is the engine checkpoint uses for a full fact check. It reconciles facts, not formatting: which project is at what stage, which contract got signed, which payment came in. It counts the current state with a script first, then edits files from that count, instead of the AI saying "all synced up" from memory. Install it with checkpoint. You can also call it alone with `/neat-freak`; it then tells you to run `/checkpoint` so the edits get saved.
+**Full fact check** (`/checkpoint full`, formerly the separate neat-freak skill): it reconciles facts, not formatting: which project is at what stage, which contract got signed, which payment came in. It counts the current state with a script first, then edits files from that count, instead of the AI saying "all synced up" from memory.
 
 ### polite
 
@@ -185,7 +187,7 @@ These tools intercept what the AI is allowed to do, which affects everything you
 
 ## That's everything here
 
-Everything here can be used on its own, with two exceptions: checkpoint should be installed together with neat-freak (the `agentcrew-closure` plugin does that), and checkpoint's lite mode needs the write-manifest hook.
+Everything here can be used on its own, with one exception: checkpoint's lite mode needs the write-manifest hook.
 
 But the judgment call of "what should become a blocking hook, what belongs in a rules file, and what should become a skill" is a separate thing entirely. The paid pack asks you six questions, then builds a rules file that fits your work and how sensitive your data is, and installs the matching hooks and skills. It comes with a pitfall database that keeps being updated, and it automatically keeps your rules file from growing bloated over time:
 

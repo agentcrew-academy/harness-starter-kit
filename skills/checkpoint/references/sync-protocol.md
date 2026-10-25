@@ -1,17 +1,17 @@
-# neat-freak Sync Protocol
+# Checkpoint Sync Protocol (fact reconciliation)
 
 Your input is a manifest containing:
 
 - `mode: scoped | full`
 - `memory_mode: read-only | update`
 - `fact_list` (facts → the files they affect)
-- the active neat-freak skill dir, memory dir, vault, project roots
+- the active checkpoint skill dir, memory dir, vault, project roots
 
 This protocol only reconciles facts; it does not write the session daily log, commit, or push.
 
 ## 1. Enumeration and load routing
 
-First run `<neat-freak-skill-dir>/scripts/enumerate.sh`:
+First run `<checkpoint-skill-dir>/scripts/enumerate.sh`:
 
 ```bash
 <enumerate.sh> --memory <memory-dir> --vault <vault> [<project-root> ...]
