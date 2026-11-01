@@ -50,16 +50,24 @@ except FileNotFoundError:
     wt = None
 if wt == content:
     print("1 identical-to-worktree"); sys.exit(0)
-sha = subprocess.run(["git", "-C", root, "hash-object", "-w", "--stdin"], input=content.encode("utf-8"), capture_output=True, check=True).stdout.decode().strip()
-mode = subprocess.run(["git", "-C", root, "ls-files", "-s", "--", rel], capture_output=True).stdout.decode().split()
-m = mode[0] if mode else "100644"
-subprocess.run(["git", "-C", root, "update-index", "--cacheinfo", f"{m},{sha},{rel}"], check=True)
+try:
+    sha = subprocess.run(["git", "-C", root, "hash-object", "-w", "--stdin"], input=content.encode("utf-8"), capture_output=True, check=True).stdout.decode().strip()
+    mode = subprocess.run(["git", "-C", root, "ls-files", "-s", "--", rel], capture_output=True).stdout.decode().split()
+    m = mode[0] if mode else "100644"
+    subprocess.run(["git", "-C", root, "update-index", "--cacheinfo", f"{m},{sha},{rel}"], capture_output=True, check=True)
+except (subprocess.CalledProcessError, OSError):
+    print("5 error: git hash-object/update-index failed"); sys.exit(0)
 print("0 staged")
 PY
-)
+); PYRC=$?
   code=${OUT%% *}
   case "$code" in
-    1) git -C "$ROOT" add -- "$REL" ;;
+    [0-5]) ;;
+    *) code=5; OUT="5 error: helper failed" ;;
+  esac
+  [ "$PYRC" -eq 0 ] || { code=5; OUT="5 error: helper failed"; }
+  case "$code" in
+    1) git -C "$ROOT" add -- "$REL" >/dev/null 2>&1 || { code=5; OUT="5 error: git add failed"; } ;;
   esac
   echo "$code $FILE ${OUT#* }"
   [ "$code" -gt "$worst" ] && worst=$code

@@ -1,7 +1,7 @@
 #!/bin/bash
 # checkpoint fact reconciliation, step 1: mechanical enumeration script — produces unforgeable inventory evidence.
 # Usage: enumerate.sh [--memory <memory-dir>] [--vault <kb-root>] [<project-root> ...]
-# --vault: knowledge-base reconciliation (daily-log <-> master-file done-marker cross-check, missing tags, fake dates, cross-file duplicate todos)
+# --vault: notes-folder reconciliation (daily-log <-> master-file done-marker cross-check, missing tags, fake dates, cross-file duplicate todos)
 # --memory: memory health check (broken index links, relative-time references)
 # <project-root>: pass this only for dev repos (docs/README enumeration)
 # The output is pasted verbatim into the final summary's "step-1 inventory evidence" section — never hand-type or rewrite the numbers.
@@ -64,7 +64,7 @@ if [[ -n "$VAULT" ]]; then
   if [[ -d "$VAULT" ]]; then
     echo "--- vault: $VAULT ---"
     MAIN_DIRS=()
-    # Your knowledge-base "master file" folders; override with VAULT_MAIN_DIRS (space-separated). Missing ones are skipped automatically.
+    # Your notes folder's "master file" subfolders; override with VAULT_MAIN_DIRS (space-separated). Missing ones are skipped automatically.
     for d in ${VAULT_MAIN_DIRS:-pillars projects decisions personal notes}; do
       [[ -d "$VAULT/$d" ]] && MAIN_DIRS+=("$VAULT/$d")
     done

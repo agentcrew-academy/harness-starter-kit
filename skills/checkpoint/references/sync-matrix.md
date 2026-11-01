@@ -26,3 +26,12 @@ Check this table when you're unsure which files a given fact-level change should
 3. **Whether an external system counts as synced depends on the external system.** If the local file changed but the calendar/scheduling tool didn't, the sync isn't done.
 4. **Deletion is a legitimate action.** Stale conclusions, superseded decisions, and completed todos left in place only give the next reader (or your future self) the wrong answer.
 5. **Check where else the one-line version lives.** A status often exists in full in one file and as a one-line summary in another (a rollup line, a daily log, a memory note). When it changes, update both, and grep the old conclusion's keywords across files that cite it.
+
+## Cross-file checks that get missed most often
+
+A fact often lives in several files, so changing one means scanning the others:
+
+- **Rollup line ↔ master file**: when a status changes, the one-line summary must change too.
+- **Daily log ↔ master file**: if the daily log says something was finished, the master file must show it done with the date; if it says something was rescheduled, the master file's date must change.
+- **Master file ↔ memory note**: contract status and person status often exist as a one-line version in both places.
+- **Conclusion in file A ↔ older conclusion in file B**: two files can hold opposite conclusions about the same todo and sit that way for days. When you change a conclusion, grep its keywords and scan every file that cites it.

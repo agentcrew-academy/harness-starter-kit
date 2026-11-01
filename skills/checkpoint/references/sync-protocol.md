@@ -72,6 +72,8 @@ Principles:
 - Only edit global instructions when the user explicitly stated a cross-project principle.
 - For schedule/meeting changes that require touching an external system, only do so when this session was explicitly authorized to; otherwise list it as unresolved — don't pass off a local edit as complete.
 - If you discover a past sync was missed, fix only the items caught by this scoped/full review — don't expand into unrelated maintenance.
+- Check master-file todos by actually grepping: take 2–3 keywords from this session's work (a person's name, a feature, a page) and search the matching master files for open items (`- [ ]`). Never say "there's no matching todo" from memory.
+- Don't fake the run. "Memory descriptions match their content" (G8) means you actually read the affected memory files. Better to read the 3–5 that really changed than to run only an `ls` count and declare it done. A summary left over from before a context compaction that says "GATE ticked" doesn't count as having run it this time.
 
 ## 4. Final verification and report
 
