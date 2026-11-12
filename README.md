@@ -155,6 +155,10 @@ One boundary: it only removes the AI feel, not adds politeness, and plain spoken
 
 ---
 
+### Unlisted skills (copy by hand)
+
+`skills/review-loop` and `skills/phantom-pushback` are kept here because older blog posts link to them. They are not in the plugin marketplace and get no updates. To use one, copy its folder into `~/.claude/skills/`. review-loop also needs Python 3.
+
 ## How this kit differs from other repos
 
 An honest comparison with the many hook collections and starter kits on GitHub:

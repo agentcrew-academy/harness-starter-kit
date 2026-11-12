@@ -224,3 +224,8 @@ MIT，意思是你可以隨便拿去用、拿去改、拿去賣，不用付錢�
 其他課程跟工具在 <https://www.agentcrew.cc>。
 
 免費的這些不會過期，也不會哪天被我拿掉改成付費。放心用。
+
+### 未列入安裝的 skill（手動複製）
+
+`skills/review-loop` 和 `skills/phantom-pushback` 因為舊部落格文章有連結而保留在這裡，不在外掛市集裡、也不再更新。要用就把資料夾複製到 `~/.claude/skills/`；review-loop 另外需要 Python 3。
+

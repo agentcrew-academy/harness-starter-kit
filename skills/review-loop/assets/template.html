@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}} — Review v{{VERSION}}</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Serif+4:wght@600;700;900&display=swap');
+
+/* Swap this block for your own brand -- every other rule below only
+   references these variables. Default is AgentCrew Academy's
+   red-clay editorial system. */
+:root{
+  --ink:#151312;        /* body text */
+  --stone:#6E675F;      /* secondary text */
+  --line:#DDD9D3;       /* hairline */
+  --wash:#F6F5F2;       /* light background */
+  --paper:#FFFFFF;      /* pure white */
+  --band:#171310;       /* dark band */
+  --accent:#C8371E;     /* red clay */
+  --accent-deep:#A32D18;
+  /* Status doesn't introduce a new hue: position + existing colors carry
+     meaning, not a green "done" light */
+  --new:#C8371E; --edit:#6E675F; --same:#DDD9D3; --gone:#9A938A;
+  --radius:0;           /* square corners, site-wide convention */
+  --font-body:'Inter',-apple-system,'Segoe UI',sans-serif;
+  --font-display:'Source Serif 4',serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);color:var(--ink);
+     background:var(--wash);line-height:1.8;font-size:16px}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 150px}
+
+header{background:var(--band);color:#F2EFE9;padding:52px 20px 44px;margin-bottom:0}
+header .in{max-width:940px;margin:0 auto}
+header h1{font-family:var(--font-display);font-size:26px;font-weight:900;margin-bottom:6px;letter-spacing:-.01em}
+header .sub{font-size:13px;color:#a9a29a}
+
+.stats{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);
+       padding:12px 20px;margin-bottom:30px}
+.stats .in{max-width:940px;margin:0 auto;display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+.stat b{font-family:ui-monospace,Menlo,monospace;font-size:19px;font-variant-numeric:tabular-nums;color:var(--accent)}
+.stat span{font-size:12px;color:var(--stone);margin-left:5px}
+.stats .sp{flex:1}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--paper);
+       padding:7px 14px;border-radius:var(--radius);color:var(--ink)}
+button:hover{border-color:var(--ink)}
+button.on{background:var(--band);color:#fff;border-color:var(--band)}
+button.go{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+
+.note{background:var(--paper);border-left:3px solid var(--accent);padding:14px 18px;margin-bottom:22px;font-size:14.5px}
+.pre{background:var(--paper);border:1px solid var(--line);padding:18px 22px;margin-bottom:26px}
+
+.blk{background:var(--paper);border:1px solid var(--line);margin-bottom:20px}
+.blk.s-new{border-left:4px solid var(--new)}
+.blk.s-edited{border-left:4px solid var(--edit)}
+.blk.s-unchanged{border-left:4px solid var(--same)}
+.blk.s-approved{border-left:4px solid var(--ink)}
+.blk.s-removed{border-left:4px solid var(--gone);background:#f2f1ef;opacity:.72}
+.blk.s-removed .btitle{text-decoration:line-through}
+
+.bhead{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.num{font-family:ui-monospace,monospace;font-size:12px;color:var(--accent);letter-spacing:.06em}
+.btitle{font-family:var(--font-display);font-weight:700;font-size:17.5px;flex:1;min-width:180px}
+.badge{font-size:11px;padding:2px 8px;border:1px solid var(--line);color:var(--stone);white-space:nowrap}
+.s-new .badge{background:var(--new);color:#fff;border-color:var(--new)}
+.s-edited .badge{color:var(--ink);border-color:var(--ink);background:var(--wash)}
+.s-approved .badge{color:var(--ink);border-color:var(--ink)}
+.s-approved .badge::before{content:'\2713';color:var(--accent);margin-right:4px}
+.bid{font-family:ui-monospace,monospace;font-size:11px;color:var(--stone);background:var(--wash);padding:2px 7px}
+.rmwhy{padding:10px 20px;font-size:14px;color:var(--stone)}
+
+.body{padding:20px 24px 8px;line-height:1.85}
+.body h2,.body h3,.body h4,.body h5,.body h6{font-family:var(--font-display);font-size:16.5px;font-weight:700;margin:16px 0 8px}
+.body p{margin-bottom:11px}
+.body ul{margin:0 0 12px 22px}
+.body li{margin-bottom:5px}
+.body pre{background:var(--wash);padding:12px 14px;overflow-x:auto;font-size:13px;
+          font-family:ui-monospace,Menlo,monospace;margin-bottom:12px;white-space:pre-wrap}
+.body strong{font-weight:700}
+.body code{background:var(--wash);padding:1px 5px;font-family:ui-monospace,monospace;font-size:13.5px}
+
+.cmt{border-top:1px solid var(--line);padding:14px 24px 18px;background:var(--wash)}
+.intent{display:flex;gap:16px;margin-bottom:9px;flex-wrap:wrap}
+.intent label{font-size:13.5px;cursor:pointer;color:var(--stone)}
+.intent input{margin-right:4px;cursor:pointer}
+textarea{width:100%;font:inherit;font-size:14.5px;padding:9px 11px;border:1px solid var(--line);
+         background:var(--paper);resize:vertical;line-height:1.7}
+textarea:focus{outline:none;border-color:var(--accent)}
+.blk.done{box-shadow:inset 3px 0 0 var(--ink)}
+
+.bar{position:fixed;bottom:0;left:0;right:0;background:var(--band);color:#fff;padding:13px 20px;z-index:30}
+.bar .in{max-width:940px;margin:0 auto;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.bar .cnt{font-size:13.5px;color:#b9b2aa;flex:1}
+.bar button{border-color:#4a453f;background:transparent;color:#fff}
+.bar button:hover{border-color:#fff}
+.hidden{display:none !important}
+.toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);background:var(--band);color:#fff;
+       padding:11px 22px;font-size:14px;z-index:40;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+@media(max-width:640px){.stats .in{gap:14px}.btitle{min-width:100%}}
+</style>
+</head>
+<body>
+
+<header><div class="in">
+  <h1>{{TITLE}}</h1>
+  <div class="sub">Reviewing version {{VERSION}} · one box per block -- fill in your notes, then click "Copy all feedback" and paste it back to the AI</div>
+</div></header>
+
+<div class="stats"><div class="in">
+  <div class="stat"><b>{{CHANGED}}</b><span>to review this round</span></div>
+  <div class="stat"><b>{{TOTAL}}</b><span>total blocks</span></div>
+  <div class="stat"><b>{{COVERAGE}}</b><span>retained from previous version {{COVDETAIL}}</span></div>
+  <div class="sp"></div>
+  <button id="only" onclick="toggleOnly()">Show changed only</button>
+  <button onclick="jumpNext()">Jump to next unfilled</button>
+</div></div>
+
+<div class="wrap">
+  <div class="note">
+    <strong>Only {{CHANGED}} block(s) changed this round</strong> (new {{CNEW}}, edited {{CEDIT}}, removed {{CREMOVED}}),
+    the other {{CSAME}} are byte-for-byte the same as last version -- skip those.
+    Greyed-out struck-through blocks were <strong>removed but kept on purpose</strong> -- leaving them in place is how you can see they were taken out.
+  </div>
+  {{PREAMBLE}}
+  {{BLOCKS}}
+</div>
+
+<div class="bar"><div class="in">
+  <span class="cnt" id="cnt">No feedback entered yet</span>
+  <button onclick="copyOut('text')">Copy all feedback</button>
+  <button onclick="copyOut('json')">Copy as JSON</button>
+  <button class="go" onclick="copyOut('text')">Done, paste back to the AI</button>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<footer style="text-align:center;padding:28px 20px 96px;font-size:12.5px;color:var(--stone);
+               font-family:-apple-system,'Inter',sans-serif">
+  Generated by <a href="https://github.com/agentcrew-academy/harness-starter-kit/tree/main/skills/review-loop"
+        style="color:var(--accent);text-decoration:none">review-loop</a> ·
+  <a href="https://www.agentcrew.cc" style="color:var(--stone);text-decoration:none">AgentCrew Academy</a> · MIT
+</footer>
+
+<script>
+const KEY = 'review-{{TITLE}}-v{{VERSION}}';
+
+function blocks(){ return [...document.querySelectorAll('.blk')]; }
+
+function collect(){
+  return blocks().map(b=>{
+    const id = b.dataset.id;
+    const sel = b.querySelector('input[name="i-'+id+'"]:checked');
+    const note = b.querySelector('textarea').value.trim();
+    return {id, status:b.dataset.status, intent: sel? sel.value : '', note};
+  }).filter(r=>r.intent || r.note);
+}
+
+function refresh(){
+  const got = collect();
+  blocks().forEach(b=>{
+    const id=b.dataset.id;
+    const has = got.some(r=>r.id===id);
+    b.classList.toggle('done', has);
+  });
+  const n = got.length;
+  const todo = blocks().filter(b=>['new','edited'].includes(b.dataset.status) && !b.classList.contains('done')).length;
+  document.getElementById('cnt').textContent =
+    n ? `${n} block(s) filled in` + (todo? `, ${todo} changed block(s) still unreviewed this round` : ', everything changed this round has been reviewed') : 'No feedback entered yet';
+  localStorage.setItem(KEY, JSON.stringify(got));
+}
+
+function restore(){
+  let saved; try{ saved = JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return; }
+  saved.forEach(r=>{
+    const b = document.querySelector(`.blk[data-id="${r.id}"]`); if(!b) return;
+    if(r.intent){ const el=b.querySelector(`input[name="i-${r.id}"][value="${r.intent}"]`); if(el) el.checked=true; }
+    if(r.note) b.querySelector('textarea').value = r.note;
+  });
+  refresh();
+}
+
+function toText(rows){
+  const head = `## Review feedback  ${document.title}`;
+  const body = rows.map(r=>`[${r.id}] ${r.intent||'Discuss'}${r.note? ' — '+r.note : ''}`);
+  const skipped = blocks()
+    .filter(b=>['new','edited'].includes(b.dataset.status) && !b.classList.contains('done'))
+    .map(b=>b.dataset.id);
+  const tail = skipped.length
+    ? `\n(Changed this round but I left no note: ${skipped.join(', ')} -- that's not approval, just not reviewed yet)` : '';
+  return [head,'',...body,tail].join('\n');
+}
+
+function copyOut(fmt){
+  const rows = collect();
+  if(!rows.length){ toast('No feedback entered yet'); return; }
+  const out = fmt==='json'
+    ? JSON.stringify({version:'{{VERSION}}', items:rows}, null, 2)
+    : toText(rows);
+  navigator.clipboard.writeText(out).then(
+    ()=>toast(`Copied feedback for ${rows.length} block(s) -- paste it back to the AI`),
+    ()=>{ // some browsers won't allow clipboard access under file://, fall back to manual copy
+      const ta=document.createElement('textarea');
+      ta.value=out; ta.style.cssText='position:fixed;top:8%;left:5%;width:90%;height:70%;z-index:99;font-size:13px';
+      document.body.appendChild(ta); ta.select();
+      toast('This browser won\'t auto-copy -- select all text in this box and copy manually, then click outside it');
+      ta.addEventListener('blur',()=>ta.remove());
+    });
+}
+
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+let onlyChanged=false;
+function toggleOnly(){
+  onlyChanged=!onlyChanged;
+  document.getElementById('only').classList.toggle('on', onlyChanged);
+  blocks().forEach(b=>{
+    const changed=['new','edited','removed'].includes(b.dataset.status);
+    b.classList.toggle('hidden', onlyChanged && !changed);
+  });
+}
+
+function jumpNext(){
+  const next = blocks().find(b=>['new','edited'].includes(b.dataset.status)
+                              && !b.classList.contains('done') && !b.classList.contains('hidden'));
+  if(next){ next.scrollIntoView({behavior:'smooth',block:'center'}); next.querySelector('textarea').focus(); }
+  else toast('Every block changed this round has been filled in');
+}
+
+document.addEventListener('input', e=>{ if(e.target.matches('textarea')) refresh(); });
+document.addEventListener('change', e=>{ if(e.target.matches('input[type=radio]')) refresh(); });
+restore();
+</script>
+</body>
+</html>
